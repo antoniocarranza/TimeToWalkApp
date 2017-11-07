@@ -35,10 +35,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         //timer for update widget every widgetUpdateTimeInterval value
         timer = Timer.scheduledTimer(timeInterval: self.widgetUpdateTimeInterval, target: self, selector: #selector(updatePendingTime), userInfo: nil, repeats: true)
         RunLoop.main.add(timer, forMode: .commonModes)
-        
         currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
-        
+        print("Current Status is set to \(currentStatus)")
         updateWidget()
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -55,7 +56,6 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 
         currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
         if currentStatus {
-            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentStatus, forKey: "currentStatus")
             updateWidget()
             updatePendingTime()  //TODO: ¿Es necesario?
         }
@@ -65,16 +65,22 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     //MARK: - Widget Update
     
     @objc func updateWidget() {
-        let nextNotificationTimeString = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.string(forKey: "NextNotificationTime")
-        self.widgetLabel.text = nextNotificationTimeString
+        if let nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
+            self.widgetLabel.text = nextNotificationDate.description
+            print("Next Notification Date is set to \(nextNotificationDate.description)")
+        } else {
+            print("Next Notification Date not set or set to nil")
+        }
+
     }
     
     @objc func updatePendingTime() {
-        if pendingTimeLabel.text == "Pending time -" {
-            pendingTimeLabel.text = "Pending time |"
-        } else {
-            self.pendingTimeLabel.text = "Pending time -"
+        
+        if let nextNotificationTime = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
+            self.widgetLabel.text = nextNotificationTime.description
+            let dateRangeStart = Date()
+            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: dateRangeStart, to: nextNotificationTime)            
+            pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
         }
     }
-    
 }

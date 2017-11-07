@@ -5,8 +5,8 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -18,85 +18,83 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uXT-VW-O3l">
-                                <rect key="frame" x="131" y="30" width="113" height="24"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="7dd-ci-X7l">
+                                <rect key="frame" x="0.0" y="35" width="375" height="612"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TimeToDo.png" translatesAutoresizingMaskIntoConstraints="NO" id="sHZ-dX-Wy3">
-                                        <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="24" id="b8q-wt-Y2x"/>
-                                            <constraint firstAttribute="height" constant="24" id="nLt-zw-0EG"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time To" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="um4-bG-fQd">
-                                        <rect key="frame" x="32" y="0.0" width="81" height="24"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                        <nil key="textColor"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="uXT-VW-O3l">
+                                        <rect key="frame" x="130" y="0.0" width="115" height="24"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="TimeToDo.png" translatesAutoresizingMaskIntoConstraints="NO" id="sHZ-dX-Wy3">
+                                                <rect key="frame" x="0.0" y="0.0" width="24" height="24"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="24" id="b8q-wt-Y2x"/>
+                                                    <constraint firstAttribute="height" constant="24" id="nLt-zw-0EG"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time To" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="um4-bG-fQd">
+                                                <rect key="frame" x="34" y="0.0" width="81" height="24"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Select an interval to notify you" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ch-0J-68e">
+                                        <rect key="frame" x="72" y="29" width="231" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <datePicker contentMode="scaleToFill" verticalHuggingPriority="246" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" countDownDuration="300" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5b-ts-EV7">
+                                        <rect key="frame" x="27.5" y="54.5" width="320" height="226"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="300" id="I4u-If-bUm"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="OOV-PB-ERV"/>
+                                        </constraints>
+                                        <date key="date" timeIntervalSinceReferenceDate="-978310794.11798">
+                                            <!--1969-12-31 23:00:05 +0000-->
+                                        </date>
+                                        <connections>
+                                            <action selector="intervalChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="qhy-cN-WGf"/>
+                                        </connections>
+                                    </datePicker>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a sound for your notification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kzq-QR-GeQ">
+                                        <rect key="frame" x="54.5" y="285.5" width="266.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <pickerView tag="1" contentMode="scaleToFill" verticalHuggingPriority="247" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="zag-Te-enE">
+                                        <rect key="frame" x="27.5" y="311" width="320" height="216"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" relation="lessThanOrEqual" constant="300" id="F6O-DR-eKB"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="txk-pU-713"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="dataSource" destination="BYZ-38-t0r" id="Gtk-ip-Jxl"/>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="fsc-Jp-mcc"/>
+                                        </connections>
+                                    </pickerView>
+                                    <button opaque="NO" contentMode="scaleAspectFit" verticalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ZQ-4a-adq">
+                                        <rect key="frame" x="147.5" y="532" width="80" height="80"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="kd9-32-yEz"/>
+                                            <constraint firstAttribute="width" secondItem="9ZQ-4a-adq" secondAttribute="height" multiplier="1:1" id="ppG-wd-4Ug"/>
+                                        </constraints>
+                                        <state key="normal" image="Play"/>
+                                        <connections>
+                                            <action selector="timeToButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7FS-W0-0AT"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </stackView>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" countDownDuration="300" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5b-ts-EV7">
-                                <rect key="frame" x="0.0" y="90.5" width="375" height="216"/>
-                                <date key="date" timeIntervalSinceReferenceDate="-978310794.11798">
-                                    <!--1969-12-31 23:00:05 +0000-->
-                                </date>
-                                <connections>
-                                    <action selector="intervalChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="qhy-cN-WGf"/>
-                                </connections>
-                            </datePicker>
-                            <pickerView tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zag-Te-enE">
-                                <rect key="frame" x="0.0" y="343" width="375" height="150"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="150" id="xWz-gp-i2C"/>
-                                </constraints>
-                                <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="Gtk-ip-Jxl"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="fsc-Jp-mcc"/>
-                                </connections>
-                            </pickerView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select an interval to notify you" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ch-0J-68e">
-                                <rect key="frame" x="10" y="62" width="355" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a sound for your notification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kzq-QR-GeQ">
-                                <rect key="frame" x="10" y="314.5" width="355" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ZQ-4a-adq">
-                                <rect key="frame" x="140" y="501" width="94" height="96"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="94" id="0Yo-M5-vl2"/>
-                                    <constraint firstAttribute="height" constant="96" id="GND-b5-XsZ"/>
-                                </constraints>
-                                <state key="normal" image="start"/>
-                                <connections>
-                                    <action selector="timeToButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7FS-W0-0AT"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Y5b-ts-EV7" firstAttribute="top" secondItem="0ch-0J-68e" secondAttribute="bottom" constant="8" symbolic="YES" id="0c2-1E-ebv"/>
-                            <constraint firstItem="Kzq-QR-GeQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="25E-Ya-JgK"/>
-                            <constraint firstItem="0ch-0J-68e" firstAttribute="top" secondItem="uXT-VW-O3l" secondAttribute="bottom" constant="8" symbolic="YES" id="8HT-KK-bGp"/>
-                            <constraint firstItem="9ZQ-4a-adq" firstAttribute="top" secondItem="zag-Te-enE" secondAttribute="bottom" constant="8" symbolic="YES" id="Bsg-fv-aZQ"/>
-                            <constraint firstItem="Y5b-ts-EV7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Glf-VR-NOT"/>
-                            <constraint firstItem="0ch-0J-68e" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="KmF-XF-Dlk"/>
-                            <constraint firstItem="zag-Te-enE" firstAttribute="top" secondItem="Kzq-QR-GeQ" secondAttribute="bottom" constant="8" symbolic="YES" id="Kpu-dJ-RrW"/>
-                            <constraint firstItem="uXT-VW-O3l" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Kqo-1Y-e27"/>
-                            <constraint firstItem="uXT-VW-O3l" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="Lky-ta-QEd"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Kzq-QR-GeQ" secondAttribute="trailing" constant="10" id="O4W-J8-e0u"/>
-                            <constraint firstItem="Kzq-QR-GeQ" firstAttribute="top" secondItem="Y5b-ts-EV7" secondAttribute="bottom" constant="8" symbolic="YES" id="XlK-1h-ZT0"/>
-                            <constraint firstItem="zag-Te-enE" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="eNZ-iZ-Eal"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0ch-0J-68e" secondAttribute="trailing" constant="10" id="gQw-MR-tza"/>
-                            <constraint firstItem="9ZQ-4a-adq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="r2h-Rt-2fw"/>
-                            <constraint firstItem="zag-Te-enE" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="rJx-gO-Cel"/>
-                            <constraint firstItem="Y5b-ts-EV7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="yRz-os-EOV"/>
+                            <constraint firstItem="7dd-ci-X7l" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="8r7-bR-nWr"/>
+                            <constraint firstItem="7dd-ci-X7l" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="15" id="BxU-vK-WcG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="7dd-ci-X7l" secondAttribute="bottom" constant="20" id="buk-Oj-HfJ"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="7dd-ci-X7l" secondAttribute="trailing" id="duv-kh-ubH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -112,7 +110,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Play" width="70" height="80"/>
         <image name="TimeToDo.png" width="182" height="182"/>
-        <image name="start" width="225" height="225"/>
     </resources>
 </document>

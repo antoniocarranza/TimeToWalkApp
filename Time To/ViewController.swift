@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import AVFoundation
 
 class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
@@ -16,37 +17,42 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var timeToButton: UIButton!
     
     var timer = Timer()
-    var sounds = ["Default","Lorry","Fish"]
+    var sounds = ["Default","Lorry","Airplane","Phone","Hyena"]
+    var player: AVAudioPlayer?
     
-    var currentSoundSelected: String = "Lorry" //TODO: Cargar de UserDefaults
-    var currentStatus: Bool = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))! {
+    var currentSound: Int = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.integer(forKey: "currentSound"))! {
         didSet {
-            print("currentStatus didSet to \(currentStatus)")
+            print("Selected Sound saved to \(sounds[currentSound])")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentSound, forKey: "currentSound")
+        }
+    }
+    var currentInterval: TimeInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))! {
+        didSet {
+            print("Selected Interval saved to \(currentInterval)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.set(currentInterval, forKey: "currentTimeInterval")
+        }
+    }
+    var currentStatus: Bool = false {
+        didSet {
+            print("Status saved to \(currentStatus)")
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentStatus, forKey: "currentStatus")
             if currentStatus {
-                //timeToButton.setTitle("Stop", for: .normal)
-                let buttonStopImage = UIImage(named: "stop.png")
-                timeToButton.setImage(buttonStopImage, for: .normal)
-                scheduleNotification()
-            } else {
-                let buttonStartImage = UIImage(named: "start.png")
-                timeToButton.setImage(buttonStartImage, for: .normal)
-                //timeToButton.setTitle("Time To", for: .normal)
-                lastNotificationTimeSet = "Nothing scheduled"
-                //TODO: Cancelar la notificación
-                //      Habrá que sacarlo a una funcion
+                let buttonStopImage = UIImage(named: "Stop.png")
+                self.timeToButton.setImage(buttonStopImage, for: .normal)
+                } else {
+                let buttonStartImage = UIImage(named: "Play")
+                    self.timeToButton.setImage(buttonStartImage, for: .normal)
+                }
             }
         }
-    }
     
     // Hora que aparecerá en el widget de la proxima notificación prevista.
-    var lastNotificationTimeSet: String? {
+    var nextNotificationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
         didSet {
-            print("lastNotificationTimeSet didSet to: \(lastNotificationTimeSet!)")
-            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(lastNotificationTimeSet, forKey: "NextNotificationTime")
+            print("nextNotificationDate saved to \(nextNotificationDate!.description)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(nextNotificationDate, forKey: "nextNotificationDate")
         }
     }
-
     //MARK: - Application lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,17 +60,19 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         
         UNUserNotificationCenter.current().delegate = self
         
-        if let existLastNotificationTimeSet = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.string(forKey: "NextNotificationTime") {
-            lastNotificationTimeSet = existLastNotificationTimeSet
-        } else {
-            lastNotificationTimeSet = "Nothing scheduled"
-            currentStatus = false
-        }
-        
-        //UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(lastNotificationTimeSet, forKey: "NextNotificationTime")
-        
+        // Update controls to saved status
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(setInitialPickersValues), userInfo: nil, repeats: false)
         RunLoop.main.add(timer, forMode: .commonModes)
+        
+        // Update Start Button to current status
+        currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
+        
+        // Show initial values at console
+        print("View Did Load!")
+        print("Current Status \(currentStatus)")
+        print("Current Interval \(currentInterval)")
+        print("Current Sound \(currentSound)")
+        print("Next Notification Date \(nextNotificationDate?.description ?? "not set or nil")")
     }
     
     override func didReceiveMemoryWarning() {
@@ -73,19 +81,17 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     }
     
     //MARK: - DataPicker delegates
-    
     @IBAction func intervalChanged(_ sender: UIDatePicker) {
-        print("intervalChanged: \(sender.countDownDuration)")
+        currentInterval = intervalTimer.countDownDuration
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch pickerView.tag {
         case 1:
-            currentSoundSelected = sounds[row]
-            print("Sound Selected \(currentSoundSelected)")
+            currentSound = row
+            previewSound()
         default:
-            print("Nothing to do...")
-            
+            print("Unrecognized pickerView with tag \(pickerView.tag), event didSelectRow")
         }
     }
     
@@ -107,40 +113,67 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         case 1:
             return sounds[row]
         default:
-            return "Nothing"
+            return "Unrecognized picker"
         }
     }
     
     @objc func setInitialPickersValues() {
         
-        //Set the CountdownTimer (intervalTimer) value to 1 hour
-        //TODO: Should read from UserDefaults
+        //Set the Interval Picker to last saved value or to 1 hour
+        if currentInterval == 0 {currentInterval = 3600}
         
         var c = DateComponents()
         
-        c.year = 2017
-        c.month = 8
-        c.day = 31
-        c.hour = 1
+        c.year = Calendar.current.component(.year, from: Date())
+        c.month = Calendar.current.component(.month, from: Date())
+        c.day = Calendar.current.component(.day, from: Date())
+        c.hour = 0
         c.minute = 0
+        c.second = Int(currentInterval)
         
         if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
             self.intervalTimer.setDate(intervalDate, animated: true)
         }
         
-        //Set the Sound for Notification
-        //TODO: Should read from UserDefaults
-        self.soundSelector.selectRow(1, inComponent: 0, animated: true)
-        
+        //Set the Sound selected for Notification
+        self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
     }
-
     
-    
+    func previewSound() {
+        let currentSoundName = sounds[currentSound]
+        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            
+            
+            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+            
+            /* iOS 10 and earlier require the following line:
+             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
+            
+            guard let player = player else { return }
+            
+            player.play()
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
     
     //MARK: - Actions
     
     @IBAction func timeToButtonPressed(_ sender: UIButton) {
-        currentStatus = !currentStatus
+        //TODO: Intentar la logica aqui y en funcion del resultado cambiar el status.
+        
+        if currentStatus {
+            //TODO: Delete Notifications
+            currentStatus = false
+        } else {
+            scheduleNotification()
+        }
     }
     
     //MARK: - Notifications scheduller
@@ -155,8 +188,6 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             currentStatus = true
         case "Finish":
             //TODO: Eliminar la notificacion?
-            //TODO: Cambiar el titulo del boton (esto debiese ser una funcion y no cambiarlo en 2-3 sitios)
-            //      Además debiera restablecer los valores del widget y demas
             currentStatus = false
             completionHandler()
         default:
@@ -174,49 +205,46 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         centre.getNotificationSettings { (settings) in
             if settings.authorizationStatus != UNAuthorizationStatus.authorized {
                 print("Notifications Not Authorised for this App")
+                let alertController = UIAlertController(title: "Time To Notifications", message: "Check that notifications are enabled at Preferences > Notifications for Time To App", preferredStyle: .alert)
+                let OkAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                alertController.addAction(OkAction)
+                DispatchQueue.main.async {self.present(alertController, animated: true, completion:nil)}
             } else {
                 print("Notifications Authorised")
                 let content = UNMutableNotificationContent()
                 content.title = NSString.localizedUserNotificationString(forKey: "Time To Do", arguments: nil)
                 content.body = NSString.localizedUserNotificationString(forKey: "Something diferent", arguments: nil)
                 content.categoryIdentifier = "Category"
-                content.sound = UNNotificationSound(named: "\(self.currentSoundSelected).wav")
-                //content.sound = UNNotificationSound.default()
-                
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: currentSelectedInterval, repeats: false)
-                
-                // Share Data with extension trhough Userfeaults shared group "group.es.365d.TimeTo"
-                let timeFormatter = DateFormatter()
-                timeFormatter.dateStyle = .full
-                timeFormatter.timeStyle = .medium
-                timeFormatter.timeZone = .current
-                timeFormatter.locale = Locale(identifier: "es_ES")
-                self.lastNotificationTimeSet = timeFormatter.string(from: trigger.nextTriggerDate()!)
-                
-                UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(self.lastNotificationTimeSet, forKey: "NextNotificationTime")
+                if self.currentSound == 0 {
+                    content.sound = UNNotificationSound.default()
+                } else {
+                    content.sound = UNNotificationSound(named: "\(self.currentSound).wav")
+                }
                 
                 // Schedule the notification.
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: currentSelectedInterval, repeats: false)
+                self.nextNotificationDate = trigger.nextTriggerDate()
                 let request = UNNotificationRequest(identifier: "TimeToDo", content: content, trigger: trigger)
                 let center = UNUserNotificationCenter.current()
                 let continueAction = UNNotificationAction.init(identifier: "Restart", title: "Restart", options: UNNotificationActionOptions())
                 let finishAction = UNNotificationAction.init(identifier: "Finish", title: "Finish", options: UNNotificationActionOptions.foreground)
                 let categories = UNNotificationCategory.init(identifier: "Category", actions: [continueAction, finishAction], intentIdentifiers: [], options: [])
-                
                 centre.setNotificationCategories([categories])
-                //center.add(request, withCompletionHandler: nil)
                 
-                print(Date())
                 center.add(request) { (error : Error?) in
                     if let theError = error {
-                        print(theError.localizedDescription)
+                        print("Error: \(theError.localizedDescription)")
+                        let alertController = UIAlertController(title: "Time To Notifications", message: "Something went wrong and notification could not be created, sorry.\n\(theError.localizedDescription)", preferredStyle: .alert)
+                        let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                        alertController.addAction(OKAction)
+                        DispatchQueue.main.async {self.present(alertController, animated: true, completion:nil)}
                     } else {
-                        print("\(Date()) - Notificacion programada")
+                        print("Notifycation scheduled")
+                        DispatchQueue.main.async {self.currentStatus = true}
                     }
                 }
-                
             }
         }
     }
-    
 }
 

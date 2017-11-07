@@ -24,8 +24,8 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pending Time To" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JH7-Uw-flA">
-                                <rect key="frame" x="0.0" y="20" width="320" height="21"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <rect key="frame" x="0.0" y="30.5" width="320" height="31.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -41,7 +41,7 @@
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="JH7-Uw-flA" secondAttribute="trailing" id="YCc-cn-T1y"/>
                             <constraint firstItem="GcN-lo-r42" firstAttribute="top" secondItem="ssy-KU-ocm" secondAttribute="top" id="amN-EV-z7K"/>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="XVy-Pu-aeW" secondAttribute="trailing" id="bN1-K7-qNZ"/>
-                            <constraint firstItem="JH7-Uw-flA" firstAttribute="top" secondItem="GcN-lo-r42" secondAttribute="bottom" constant="-0.5" id="dFz-41-lmR"/>
+                            <constraint firstItem="JH7-Uw-flA" firstAttribute="top" secondItem="GcN-lo-r42" secondAttribute="bottom" constant="10" id="dFz-41-lmR"/>
                             <constraint firstItem="XVy-Pu-aeW" firstAttribute="leading" secondItem="ssy-KU-ocm" secondAttribute="leading" id="hez-wV-POQ"/>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="bottom" secondItem="XVy-Pu-aeW" secondAttribute="bottom" id="jVk-KB-jwN"/>
                         </constraints>
