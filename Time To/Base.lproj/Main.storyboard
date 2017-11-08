@@ -46,7 +46,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <datePicker contentMode="scaleToFill" verticalHuggingPriority="246" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" countDownDuration="300" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5b-ts-EV7">
-                                        <rect key="frame" x="27.5" y="54.5" width="320" height="226"/>
+                                        <rect key="frame" x="27.5" y="54.5" width="320" height="234"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="300" id="I4u-If-bUm"/>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="OOV-PB-ERV"/>
@@ -59,13 +59,13 @@
                                         </connections>
                                     </datePicker>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a sound for your notification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kzq-QR-GeQ">
-                                        <rect key="frame" x="54.5" y="285.5" width="266.5" height="20.5"/>
+                                        <rect key="frame" x="54.5" y="293.5" width="266.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <pickerView tag="1" contentMode="scaleToFill" verticalHuggingPriority="247" verticalCompressionResistancePriority="749" translatesAutoresizingMaskIntoConstraints="NO" id="zag-Te-enE">
-                                        <rect key="frame" x="27.5" y="311" width="320" height="216"/>
+                                        <rect key="frame" x="27.5" y="319" width="320" height="216"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="lessThanOrEqual" constant="300" id="F6O-DR-eKB"/>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="150" id="txk-pU-713"/>
@@ -76,9 +76,9 @@
                                         </connections>
                                     </pickerView>
                                     <button opaque="NO" contentMode="scaleAspectFit" verticalCompressionResistancePriority="752" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9ZQ-4a-adq">
-                                        <rect key="frame" x="147.5" y="532" width="80" height="80"/>
+                                        <rect key="frame" x="151.5" y="540" width="72" height="72"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="72" id="kd9-32-yEz"/>
+                                            <constraint firstAttribute="width" constant="72" id="kd9-32-yEz"/>
                                             <constraint firstAttribute="width" secondItem="9ZQ-4a-adq" secondAttribute="height" multiplier="1:1" id="ppG-wd-4Ug"/>
                                         </constraints>
                                         <state key="normal" image="Play"/>

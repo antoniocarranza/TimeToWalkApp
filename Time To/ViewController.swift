@@ -17,7 +17,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var timeToButton: UIButton!
     
     var timer = Timer()
-    var sounds = ["Default","Lorry","Airplane","Phone","Hyena"]
+    var statusTimer = Timer()
+    var sounds = ["Default","Lorry","Phone","Hyena"]
     var player: AVAudioPlayer?
     
     var currentSound: Int = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.integer(forKey: "currentSound"))! {
@@ -40,8 +41,10 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 let buttonStopImage = UIImage(named: "Stop.png")
                 self.timeToButton.setImage(buttonStopImage, for: .normal)
                 } else {
-                let buttonStartImage = UIImage(named: "Play")
+                    let buttonStartImage = UIImage(named: "Play")
                     self.timeToButton.setImage(buttonStartImage, for: .normal)
+                    self.nextNotificationDate = nil
+                    UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 }
             }
         }
@@ -49,7 +52,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     // Hora que aparecerá en el widget de la proxima notificación prevista.
     var nextNotificationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
         didSet {
-            print("nextNotificationDate saved to \(nextNotificationDate!.description)")
+            print("nextNotificationDate saved to \(nextNotificationDate?.description ?? "not set or set to nil")")
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(nextNotificationDate, forKey: "nextNotificationDate")
         }
     }
@@ -62,22 +65,42 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         
         // Update controls to saved status
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(setInitialPickersValues), userInfo: nil, repeats: false)
+        statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true)
         RunLoop.main.add(timer, forMode: .commonModes)
-        
-        // Update Start Button to current status
-        currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
-        
-        // Show initial values at console
-        print("View Did Load!")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         print("Current Status \(currentStatus)")
         print("Current Interval \(currentInterval)")
         print("Current Sound \(currentSound)")
         print("Next Notification Date \(nextNotificationDate?.description ?? "not set or nil")")
+        
+        checkStatus()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+
+    @objc func checkStatus() {
+        let now = Date()
+        let newStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
+
+        print("Checking: current status \(currentStatus), new status \(newStatus), current date \(now), scheduled date \(nextNotificationDate?.description ?? "Not set or set to nil")")
+        
+        if newStatus != currentStatus {
+            currentStatus = newStatus
+        }
+        
+        if nextNotificationDate != nil {
+            if (nextNotificationDate! < now) && currentStatus {
+                currentStatus = false
+                return
+            }
+        }
+        
+        showNotificationStatus()
     }
     
     //MARK: - DataPicker delegates
@@ -178,9 +201,20 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     //MARK: - Notifications scheduller
     
+    func showNotificationStatus() {
+        var displayString = "Current Pending Notifications "
+        UNUserNotificationCenter.current().getPendingNotificationRequests {
+            (requests) in
+            displayString += "count \(requests.count)\t"
+            for request in requests{
+                displayString += request.identifier + "\t"
+            }
+            print(displayString)
+        }
+    }
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         print("Test: \(response.notification.request.identifier)")
-        //currentAction = response.actionIdentifier
         
         switch response.actionIdentifier {
         case "Complete":
@@ -200,6 +234,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     func scheduleNotification() {
         
         let currentSelectedInterval: TimeInterval = intervalTimer.countDownDuration
+        let soundName: String = "\(sounds[currentSound]).wav"
         
         let centre = UNUserNotificationCenter.current()
         centre.getNotificationSettings { (settings) in
@@ -218,11 +253,11 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 if self.currentSound == 0 {
                     content.sound = UNNotificationSound.default()
                 } else {
-                    content.sound = UNNotificationSound(named: "\(self.currentSound).wav")
+                    content.sound = UNNotificationSound(named: soundName)
                 }
                 
                 // Schedule the notification.
-                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: currentSelectedInterval, repeats: false)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: currentSelectedInterval, repeats: true)
                 self.nextNotificationDate = trigger.nextTriggerDate()
                 let request = UNNotificationRequest(identifier: "TimeToDo", content: content, trigger: trigger)
                 let center = UNUserNotificationCenter.current()

@@ -17,10 +17,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     var timer = Timer()
     var currentStatus: Bool = false {
         didSet {
+            print("Status saved to \(currentStatus)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentStatus, forKey: "currentStatus")
             if currentStatus {
-                timer.fire()
             } else {
-                timer.invalidate()
+                widgetLabel.text = "Nothing scheduled"
+                pendingTimeLabel.text = ""
             }
         }
     }
@@ -66,21 +68,33 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     @objc func updateWidget() {
         if let nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
-            self.widgetLabel.text = nextNotificationDate.description
+            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate)
             print("Next Notification Date is set to \(nextNotificationDate.description)")
         } else {
             print("Next Notification Date not set or set to nil")
         }
-
     }
     
     @objc func updatePendingTime() {
         
-        if let nextNotificationTime = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
-            self.widgetLabel.text = nextNotificationTime.description
-            let dateRangeStart = Date()
-            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: dateRangeStart, to: nextNotificationTime)            
-            pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+        if let nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
+            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate)
+            let now = Date()
+            if nextNotificationDate > now {
+                let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: nextNotificationDate)
+                pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+            } else {
+                if currentStatus == true {
+                    currentStatus = false
+                }
+            }
         }
+    }
+    
+    func formatDate(dateToFormat: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: dateToFormat)
     }
 }
