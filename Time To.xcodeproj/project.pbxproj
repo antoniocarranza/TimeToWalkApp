@@ -214,6 +214,9 @@
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
+							com.apple.HealthKit = {
+								enabled = 0;
+							};
 						};
 					};
 					3D8F43711FA773C40095D344 = {

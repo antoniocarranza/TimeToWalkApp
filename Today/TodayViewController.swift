@@ -8,6 +8,7 @@
 
 import UIKit
 import NotificationCenter
+import UserNotifications
 
 class TodayViewController: UIViewController, NCWidgetProviding {
     
@@ -26,6 +27,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             }
         }
     }
+    
+    var nextNotificationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
+        didSet {
+            print("nextNotificationDate saved to \(nextNotificationDate?.description ?? "not set or set to nil")")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(nextNotificationDate, forKey: "nextNotificationDate")
+        }
+    }
+
     let widgetUpdateTimeInterval: TimeInterval = 1
     
     //MARK: - Application lifecycle
@@ -60,41 +69,75 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         if currentStatus {
             updateWidget()
             updatePendingTime()  //TODO: ¿Es necesario?
+            completionHandler(NCUpdateResult.newData)
+        } else {
+            completionHandler(NCUpdateResult.noData)
         }
-        completionHandler(NCUpdateResult.newData)
     }
     
     //MARK: - Widget Update
     
     @objc func updateWidget() {
-        if let nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
-            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate)
-            print("Next Notification Date is set to \(nextNotificationDate.description)")
+        nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+        if nextNotificationDate != nil {
+            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate!)
+            print("Next Notification Date is set to \(nextNotificationDate!.description)")
         } else {
             print("Next Notification Date not set or set to nil")
         }
+        showNotificationStatus()
     }
     
     @objc func updatePendingTime() {
-        
-        if let nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
-            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate)
+        nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+        if nextNotificationDate != nil {
+            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate!)
             let now = Date()
-            if nextNotificationDate > now {
-                let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: nextNotificationDate)
-                pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
-            } else {
-                if currentStatus == true {
-                    currentStatus = false
+            
+            if nextNotificationDate! < now {
+                let lastNotificacionInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))!
+                while nextNotificationDate! < now {
+                    nextNotificationDate = nextNotificationDate!.addingTimeInterval(lastNotificacionInterval)
                 }
             }
+            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: nextNotificationDate!)
+            pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+        } else {
+            
         }
+        
+        showNotificationStatus()
+        
     }
     
     func formatDate(dateToFormat: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.timeStyle = .short
+        formatter.timeStyle = .medium
         return formatter.string(from: dateToFormat)
     }
+    
+    func showNotificationStatus() {
+        var displayString = "Current Pending Notifications "
+        UNUserNotificationCenter.current().getPendingNotificationRequests {
+            (requests) in
+            displayString += "count \(requests.count)\t"
+            for request in requests{
+                displayString += request.identifier + "\t"
+            }
+            print(displayString)
+        }
+    }
+    
+    @IBAction func changeSettings(_ sender: UIButton) {
+        
+        let url: URL? = URL(string: "setup:")!
+        
+        if let appurl = url {
+            self.extensionContext!.open(appurl, completionHandler: nil)
+        }
+    }
+    
+    
+    
 }

@@ -32,6 +32,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XVy-Pu-aeW">
                                 <rect key="frame" x="0.0" y="80" width="320" height="30"/>
                                 <state key="normal" title="Change Settings"/>
+                                <connections>
+                                    <action selector="changeSettings:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="GGW-Yv-y1Q"/>
+                                </connections>
                             </button>
                         </subviews>
                         <constraints>
