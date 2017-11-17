@@ -14,6 +14,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     @IBOutlet weak var widgetLabel: UILabel!
     @IBOutlet weak var pendingTimeLabel: UILabel!
+    @IBOutlet weak var lastRestartDateLabel: UILabel!
+    @IBOutlet weak var previousDistanceLabel: UILabel!
     
     var timer = Timer()
     var currentStatus: Bool = false {
@@ -34,6 +36,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(nextNotificationDate, forKey: "nextNotificationDate")
         }
     }
+    
+    var lastLocationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "lastLocationDate") as? Date {
+        didSet {
+            print("lastLocationDate saved to \(lastLocationDate?.description ?? "not set or set to nil")")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(lastLocationDate, forKey: "lastLocationDate")
+        }
+    }
+
 
     let widgetUpdateTimeInterval: TimeInterval = 1
     
@@ -48,9 +58,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         RunLoop.main.add(timer, forMode: .commonModes)
         currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
         print("Current Status is set to \(currentStatus)")
-        updateWidget()
-        
-        
+        updatePendingTime()
     }
     
     override func didReceiveMemoryWarning() {
@@ -67,8 +75,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 
         currentStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
         if currentStatus {
-            updateWidget()
-            updatePendingTime()  //TODO: ¿Es necesario?
+            //updateWidget() //TODO: ¿Es necesario?
+            updatePendingTime()
             completionHandler(NCUpdateResult.newData)
         } else {
             completionHandler(NCUpdateResult.noData)
@@ -77,44 +85,41 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     //MARK: - Widget Update
     
-    @objc func updateWidget() {
-        nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
-        if nextNotificationDate != nil {
-            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate!)
-            print("Next Notification Date is set to \(nextNotificationDate!.description)")
-        } else {
-            print("Next Notification Date not set or set to nil")
-        }
-        showNotificationStatus()
-    }
+//    @objc func updateWidget() {
+//        var tmpNextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+//        let tmpLastLocationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+//        if tmpLastLocationDate != nil { self.lastRestartDateLabel.text = formatDate(dateToFormat: lastLocationDate!) }
+//        if tmpNextNotificationDate != nil {
+//            self.widgetLabel.text = formatDate(dateToFormat: tmpNextNotificationDate!)
+//            print("Next Notification Date is set to \(nextNotificationDate!.description)")
+//        } else {
+//            print("Next Notification Date not set or set to nil")
+//        }
+//        showNotificationStatus()
+//    }
     
     @objc func updatePendingTime() {
-        nextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
-        if nextNotificationDate != nil {
-            self.widgetLabel.text = formatDate(dateToFormat: nextNotificationDate!)
+        var tmpNextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+        let tmpLastLocationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "lastLocationDate") as? Date
+        if tmpLastLocationDate != nil { self.lastRestartDateLabel.text = formatDate(dateToFormat: tmpLastLocationDate!, dateStyle: .none, timeStyle: .short) }
+        let tmpPreviousDistance = round((UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "distanceInMetersFromPreviousLocation"))!)
+        self.previousDistanceLabel.text = "\(tmpPreviousDistance) mts"
+        if tmpNextNotificationDate != nil {
+            self.widgetLabel.text = formatDate(dateToFormat: tmpNextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
             let now = Date()
-            
-            if nextNotificationDate! < now {
+            if tmpNextNotificationDate! < now {
                 let lastNotificacionInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))!
-                while nextNotificationDate! < now {
-                    nextNotificationDate = nextNotificationDate!.addingTimeInterval(lastNotificacionInterval)
+                while tmpNextNotificationDate! < now {
+                    tmpNextNotificationDate = tmpNextNotificationDate!.addingTimeInterval(lastNotificacionInterval)
                 }
+                nextNotificationDate = tmpNextNotificationDate
             }
-            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: nextNotificationDate!)
+            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: tmpNextNotificationDate!)
             pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
         } else {
-            
+            print("Next Notification Date is nil")
         }
-        
-        showNotificationStatus()
-        
-    }
-    
-    func formatDate(dateToFormat: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .medium
-        return formatter.string(from: dateToFormat)
+        //showNotificationStatus()
     }
     
     func showNotificationStatus() {
@@ -130,14 +135,16 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
     
     @IBAction func changeSettings(_ sender: UIButton) {
-        
         let url: URL? = URL(string: "setup:")!
-        
         if let appurl = url {
             self.extensionContext!.open(appurl, completionHandler: nil)
         }
     }
     
-    
-    
+    func formatDate(dateToFormat: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
+        return formatter.string(from: dateToFormat)
+    }
 }

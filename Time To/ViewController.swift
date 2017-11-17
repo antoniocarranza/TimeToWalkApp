@@ -19,22 +19,48 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var soundSelector: UIPickerView!
     @IBOutlet weak var timeToButton: UIButton!
     @IBOutlet weak var restrictToCurrentLocationSwitch: UISwitch!
+    @IBOutlet weak var restartCountdownWhenMovingSwitch: UISwitch!
     @IBOutlet weak var previewSoundSwitch: UISwitch!
+    @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var countDownLabel: UILabel!
+    @IBOutlet weak var restrictToCurrentLocationLabel: UILabel!
+    @IBOutlet weak var restartCountdownWhenMovingLabel: UILabel!
     
     var timer = Timer()
-    var statusTimer = Timer()
-    var sounds = ["Default","Lorry","Phone","Hyena"]
+    var statusTimer: Timer?
+    var countdownTimer: Timer?
+    var sounds = ["Default","Ice","Lorry","Phone","Hyena"]
     var player: AVAudioPlayer?
-    var locationManager:CLLocationManager!
-    var locationCounter: Int = 0
+    var stepsLocationManager:CLLocationManager!
+    var significantLocationManager:CLLocationManager!
+    var previousLocation: CLLocation?
+    
+    var restrictToCurrentLocationDateEnabled: Date?
+    var restartCountdownWhenMovingDateEnabled: Date?
     
     var restrictToCurrentLocation: Bool = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "restrictToCurrentLocation"))! {
         didSet {
             print("Restrict to current location saved to \(restrictToCurrentLocation)")
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(restrictToCurrentLocation, forKey: "restrictToCurrentLocation")
+            setSignificantLocationManager(enable: restrictToCurrentLocation && currentStatus)
         }
     }
-
+    
+    var restartCountdownWhenMoving: Bool = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "restartCountdownWhenMoving"))! {
+        didSet {
+            print("Restart countdown when moving saved to \(restartCountdownWhenMoving)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(restartCountdownWhenMoving, forKey: "restartCountdownWhenMoving")
+            setStepsLocationManager(enable: restartCountdownWhenMoving && currentStatus)
+        }
+    }
+    
+    var distanceInMetersFromPreviousLocation: Double = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "distanceInMetersFromPreviousLocation"))! {
+        didSet {
+            print("distance in metters from previous location saved to \(distanceInMetersFromPreviousLocation)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(distanceInMetersFromPreviousLocation, forKey: "distanceInMetersFromPreviousLocation")
+        }
+    }
+    
     var previewSound: Bool = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "previewSound"))! {
         didSet {
             print("Preview Sound saved to \(previewSound)")
@@ -58,22 +84,33 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         didSet {
             print("Status saved to \(currentStatus)")
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentStatus, forKey: "currentStatus")
+            setSignificantLocationManager(enable: restrictToCurrentLocation && currentStatus)
+            setStepsLocationManager(enable: restartCountdownWhenMoving && currentStatus)
             if currentStatus {
                 let buttonStopImage = UIImage(named: "Stop.png")
                 self.timeToButton.setImage(buttonStopImage, for: .normal)
-                locationManager.startMonitoringSignificantLocationChanges()
-                } else {
-                    let buttonStartImage = UIImage(named: "Play")
-                    self.timeToButton.setImage(buttonStartImage, for: .normal)
-                    self.nextNotificationDate = nil
-                    UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-                    locationManager.stopMonitoringSignificantLocationChanges()
-                    self.locationCounter = 0
+                self.statusLabel.text = formatDate(dateToFormat: nextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
+                if statusTimer == nil { statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true) }
+                if countdownTimer == nil { countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updatePendingTime), userInfo: nil, repeats: true) }
+            } else {
+                let buttonStartImage = UIImage(named: "Play")
+                self.timeToButton.setImage(buttonStartImage, for: .normal)
+                self.nextNotificationDate = nil
+                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+                if statusTimer != nil {
+                    statusTimer!.invalidate()
+                    statusTimer = nil
                 }
+                if countdownTimer != nil {
+                    countdownTimer!.invalidate()
+                    countdownTimer = nil
+                }
+                self.statusLabel.text = "Nothing Scheduled"
+                self.countDownLabel.text = "00:00"
             }
         }
+    }
     
-    // Hora que aparecerá en el widget de la proxima notificación prevista.
     var nextNotificationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date {
         didSet {
             print("nextNotificationDate saved to \(nextNotificationDate?.description ?? "not set or set to nil")")
@@ -81,17 +118,21 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
     
+    var lastLocationDate: Date? = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "lastLocationDate") as? Date {
+        didSet {
+            print("lastLocationDate saved to \(lastLocationDate?.description ?? "not set or set to nil")")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(lastLocationDate, forKey: "lastLocationDate")
+        }
+    }
+    
     //MARK: - Application lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
         UNUserNotificationCenter.current().delegate = self
-        
         // Update controls to saved status
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(setInitialControlsValues), userInfo: nil, repeats: false)
-        statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true)
-        RunLoop.main.add(timer, forMode: .commonModes)
+        //RunLoop.main.add(timer, forMode: .commonModes)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,43 +141,137 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         print("Current Sound \(currentSound)")
         print("Next Notification Date \(nextNotificationDate?.description ?? "not set or nil")")
         print("Restrict to current location status is \(restrictToCurrentLocation)")
+        print("Restart Countdown when moving status is \(restartCountdownWhenMoving)")
         print("Preview Sound status is \(previewSound)")
-        determineMyCurrentLocation()
         checkStatus()
     }
     
-    func determineMyCurrentLocation() {
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.distanceFilter = 10.0
-        locationManager.allowsBackgroundLocationUpdates = true
-        locationManager.requestAlwaysAuthorization()
+    @objc func setInitialControlsValues() {
+        
+        //Set the Interval Picker to last saved value or to 1 hour
+        if currentInterval == 0 {currentInterval = 3600}
+        
+        var c = DateComponents()
+        
+        c.year = Calendar.current.component(.year, from: Date())
+        c.month = Calendar.current.component(.month, from: Date())
+        c.day = Calendar.current.component(.day, from: Date())
+        c.hour = 0
+        c.minute = 0
+        c.second = Int(currentInterval)
+        
+        if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
+            self.intervalTimer.setDate(intervalDate, animated: true)
+        }
+        
+        //Set the Sound selected for Notification
+        self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
+        
+        //Set the switches Values
+        self.restrictToCurrentLocationSwitch.setOn(restrictToCurrentLocation, animated: true)
+        self.restartCountdownWhenMovingSwitch.setOn(restartCountdownWhenMoving, animated: true)
+        self.previewSoundSwitch.setOn(previewSound, animated: true)
+    }
+    
+    func setStepsLocationManager(enable: Bool) {
+        if enable {
+            print("+ Restart countdown when moving manager enabled")
+            stepsLocationManager = CLLocationManager()
+            stepsLocationManager.delegate = self
+            stepsLocationManager.desiredAccuracy = kCLLocationAccuracyBest
+            stepsLocationManager.distanceFilter = 10
+            stepsLocationManager.allowsBackgroundLocationUpdates = true
+            stepsLocationManager.requestAlwaysAuthorization()
+            stepsLocationManager.startUpdatingLocation()
+            restartCountdownWhenMovingDateEnabled = Date()
+        } else {
+            if stepsLocationManager != nil {
+                stepsLocationManager.stopUpdatingLocation()
+                stepsLocationManager = nil
+            }
+            print("- Restart countdown when moving manager disabled")
+            self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
+        }
+    }
+
+    func setSignificantLocationManager(enable: Bool) {
+        if enable {
+            print("+ Restric to current location manager enabled")
+            significantLocationManager = CLLocationManager()
+            significantLocationManager.delegate = self
+            significantLocationManager.allowsBackgroundLocationUpdates = true
+            significantLocationManager.requestAlwaysAuthorization()
+            significantLocationManager.startMonitoringSignificantLocationChanges()
+            restrictToCurrentLocationDateEnabled = Date()
+        } else {
+            if significantLocationManager != nil {
+                significantLocationManager.stopMonitoringSignificantLocationChanges()
+                significantLocationManager = nil
+            }
+            print("- Restric to current location manager disabled")
+            self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let userLocation:CLLocation = locations[0] as CLLocation
         
-        // Call stopUpdatingLocation() to stop listening for location updates,
-        // other wise this function will be called every time when user location changes.
+        if previousLocation != nil {
+            distanceInMetersFromPreviousLocation = userLocation.distance(from: previousLocation!)
+            print("previous Location is \(previousLocation!)")
+            print("Distance in meters is \(distanceInMetersFromPreviousLocation)")
+        }
+        previousLocation = userLocation
+        print("Location Manager:\nLast Location Date is \(String(describing: lastLocationDate!))")
+        print("Current Location is \(userLocation)")
         
-        // manager.stopUpdatingLocation()
-        let string = "user latitude = \(userLocation.coordinate.latitude)\nuser longitude = \(userLocation.coordinate.longitude)"
-        print(string)
-
-        if self.currentStatus && self.locationCounter > 0 { self.currentStatus = false }
-        
-        self.locationCounter += 1
-        
-//        let alert = UIAlertController(title: "Alert", message: string, preferredStyle: UIAlertControllerStyle.alert)
-//        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-//        self.present(alert, animated: true, completion: nil)
-        
+        if manager.distanceFilter == 10 {
+            if Date() > restartCountdownWhenMovingDateEnabled!.addingTimeInterval(10) {
+                print("Checking is need to restart counter")
+                if self.restartCountdownWhenMoving && distanceInMetersFromPreviousLocation > 10 {
+                    lastLocationDate = Date()
+                    print("User moved \(distanceInMetersFromPreviousLocation) mts, restarting countdown")
+                    scheduleNotification()
+                    animateLabels()
+                }
+            }
+        } else {
+            print("Checking if need to turn off notifications")
+            if Date() > restrictToCurrentLocationDateEnabled!.addingTimeInterval(60) {
+                self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.black.cgColor
+                currentStatus = false
+            }
+        }
+    }
+    
+    func animateLabels() {
+        self.countDownLabel.backgroundColor = UIColor.clear
+        UIView.animate(withDuration: 1.0, animations: {
+            self.countDownLabel.layer.backgroundColor = UIColor.darkGray.cgColor
+            self.countDownLabel.textColor = UIColor.white
+            self.statusLabel.layer.backgroundColor = UIColor.darkGray.cgColor
+            self.statusLabel.textColor = UIColor.white
+        })
+        UIView.animate(withDuration: 1.0, delay: 1.0, options: UIViewAnimationOptions(), animations: {
+            self.countDownLabel.layer.backgroundColor = UIColor.white.cgColor
+            self.countDownLabel.textColor = UIColor.lightGray
+            self.statusLabel.layer.backgroundColor = UIColor.white.cgColor
+            self.statusLabel.textColor = UIColor.lightGray
+        }, completion: nil)
+        self.countDownLabel.backgroundColor = UIColor.clear
+        self.statusLabel.backgroundColor = UIColor.clear
+    }
+    
+    func formatDate(dateToFormat: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = dateStyle
+        formatter.timeStyle = timeStyle
+        return formatter.string(from: dateToFormat)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
     {
-        print("Error \(error)")
+        print("Error in location manager \(error)")
     }
     
     override func didReceiveMemoryWarning() {
@@ -145,21 +280,25 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     }
 
     @objc func checkStatus() {
-        let now = Date()
         let newStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
-
-        //print("Checking: current status \(currentStatus), new status \(newStatus), current date \(now), scheduled date \(nextNotificationDate?.description ?? "Not set or set to nil")")
-        
-        if newStatus != currentStatus {
-            currentStatus = newStatus
-        }
-        
-        showNotificationStatus()
-        
-        if nextNotificationDate != nil {
-            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: nextNotificationDate!)
-            let timetoNotification = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
-            print("Time no next notification is \(timetoNotification)")
+        if newStatus != currentStatus { currentStatus = newStatus }
+    }
+    
+    @objc func updatePendingTime() {
+        var tmpNextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
+        if tmpNextNotificationDate != nil {
+            let now = Date()
+            if tmpNextNotificationDate! < now {
+                let lastNotificacionInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))!
+                while tmpNextNotificationDate! < now {
+                    tmpNextNotificationDate = tmpNextNotificationDate!.addingTimeInterval(lastNotificacionInterval)
+                }
+                //nextNotificationDate = tmpNextNotificationDate
+            }
+            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: tmpNextNotificationDate!)
+            countDownLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+        } else {
+            print("Next Notification Date is nil")
         }
     }
     
@@ -200,56 +339,24 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
     
-    @objc func setInitialControlsValues() {
-        
-        //Set the Interval Picker to last saved value or to 1 hour
-        if currentInterval == 0 {currentInterval = 3600}
-        
-        var c = DateComponents()
-        
-        c.year = Calendar.current.component(.year, from: Date())
-        c.month = Calendar.current.component(.month, from: Date())
-        c.day = Calendar.current.component(.day, from: Date())
-        c.hour = 0
-        c.minute = 0
-        c.second = Int(currentInterval)
-        
-        if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
-            self.intervalTimer.setDate(intervalDate, animated: true)
-        }
-        
-        //Set the Sound selected for Notification
-        self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
-        
-        //Set the switches Values
-        self.restrictToCurrentLocationSwitch.setOn(restrictToCurrentLocation, animated: true)
-        self.previewSoundSwitch.setOn(previewSound, animated: true)
-    }
-    
     func previewSoundMethod() {
         
-        if previewSound {
-            let currentSoundName = sounds[currentSound]
-            guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
+        let currentSoundName = sounds[currentSound]
+        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
             
-            do {
-                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-                try AVAudioSession.sharedInstance().setActive(true)
-                
-                
-                /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
-                player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
-                
-                /* iOS 10 and earlier require the following line:
-                 player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
-                
-                guard let player = player else { return }
-                
-                player.play()
-                
-            } catch let error {
-                print(error.localizedDescription)
-            }
+            /* iOS 10 and earlier require the following line:
+             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
+            guard let player = player else { return }
+            
+            player.play()
+            
+        } catch let error {
+            print(error.localizedDescription)
         }
     }
     
@@ -265,6 +372,10 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     @IBAction func restrictToLocationValueChanged(_ sender: UISwitch) {
         self.restrictToCurrentLocation = sender.isOn
+    }
+
+    @IBAction func restartCountdownWhenMoving(_ sender: UISwitch) {
+        self.restartCountdownWhenMoving = sender.isOn
     }
 
     @IBAction func previewSoundValueChanged(_ sender: UISwitch) {
@@ -286,27 +397,21 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
-//        let lastNotificacionInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))!
-        completionHandler([.alert,.sound, .badge])
-        
+        completionHandler([.alert,.sound])
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
         switch response.actionIdentifier {
         case "Restart":
-            //completionHandler()
             print("Restart")
         case "Finish":
             print("Finish")
             currentStatus = false
         default:
-            //completionHandler()
             print("default")
-            //currentStatus = true
         }
-        //completionHandler()
+        completionHandler()
     }
     
     func scheduleNotification() {
@@ -340,7 +445,6 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 self.nextNotificationDate = trigger.nextTriggerDate()
                 let request = UNNotificationRequest(identifier: "TimeToDo", content: content, trigger: trigger)
                 let center = UNUserNotificationCenter.current()
-                //let continueAction = UNNotificationAction.init(identifier: "Restart", title: "Restart", options: UNNotificationActionOptions())
                 let finishAction = UNNotificationAction.init(identifier: "Finish", title: "Finish", options: UNNotificationActionOptions.foreground)
                 let categories = UNNotificationCategory.init(identifier: "Category", actions: [finishAction], intentIdentifiers: [], options: [])
                 centre.setNotificationCategories([categories])
@@ -362,4 +466,6 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
 }
+
+
 
