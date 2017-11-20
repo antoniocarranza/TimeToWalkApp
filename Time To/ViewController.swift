@@ -25,6 +25,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var countDownLabel: UILabel!
     @IBOutlet weak var restrictToCurrentLocationLabel: UILabel!
     @IBOutlet weak var restartCountdownWhenMovingLabel: UILabel!
+    @IBOutlet weak var intervalStackView: UIStackView!
     
     var timer = Timer()
     var statusTimer: Timer?
@@ -87,14 +88,14 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             setSignificantLocationManager(enable: restrictToCurrentLocation && currentStatus)
             setStepsLocationManager(enable: restartCountdownWhenMoving && currentStatus)
             if currentStatus {
-                let buttonStopImage = UIImage(named: "Stop.png")
-                self.timeToButton.setImage(buttonStopImage, for: .normal)
+                self.timeToButton.setTitle("Stop", for: .normal)
+                self.timeToButton.backgroundColor = UIColor(named: "stopColor")
                 self.statusLabel.text = formatDate(dateToFormat: nextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
                 if statusTimer == nil { statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true) }
                 if countdownTimer == nil { countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updatePendingTime), userInfo: nil, repeats: true) }
             } else {
-                let buttonStartImage = UIImage(named: "Play")
-                self.timeToButton.setImage(buttonStartImage, for: .normal)
+                self.timeToButton.setTitle("Start", for: .normal)
+                self.timeToButton.backgroundColor = UIColor(named: "startColor")
                 self.nextNotificationDate = nil
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 if statusTimer != nil {
@@ -222,7 +223,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             print("Distance in meters is \(distanceInMetersFromPreviousLocation)")
         }
         previousLocation = userLocation
-        print("Location Manager:\nLast Location Date is \(String(describing: lastLocationDate!))")
+        print("Location Manager:\nLast Location Date is \(String(describing: lastLocationDate))")
         print("Current Location is \(userLocation)")
         
         if manager.distanceFilter == 10 {

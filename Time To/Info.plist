@@ -30,11 +30,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>3</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>If location changes notifications can be disabled</string>
 	<key>NSLocationUsageDescription</key>
 	<string>The application uses to disable notifications</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>If location changes notifications can be disabled</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
@@ -58,9 +62,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>If location changes notifications can be disabled</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>If location changes notifications can be disabled</string>
 </dict>
 </plist>
