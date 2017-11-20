@@ -191,7 +191,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 stepsLocationManager = nil
             }
             print("- Restart countdown when moving manager disabled")
-            self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
+            //self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
         }
     }
 
@@ -210,7 +210,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 significantLocationManager = nil
             }
             print("- Restric to current location manager disabled")
-            self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
+            //self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.white.cgColor
         }
     }
     
@@ -239,7 +239,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         } else {
             print("Checking if need to turn off notifications")
             if Date() > restrictToCurrentLocationDateEnabled!.addingTimeInterval(60) {
-                self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.black.cgColor
+                //self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.black.cgColor
                 currentStatus = false
             }
         }
