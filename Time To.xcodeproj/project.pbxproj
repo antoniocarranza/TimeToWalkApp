@@ -10,11 +10,9 @@
 		3D319BB21FB07D5E00DA5EA0 /* TimeToDo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB11FB07D5D00DA5EA0 /* TimeToDo.png */; };
 		3D319BB71FB0B67C00DA5EA0 /* Hyena.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB51FB0B67C00DA5EA0 /* Hyena.wav */; };
 		3D319BB91FB0B6EE00DA5EA0 /* Phone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB81FB0B6EE00DA5EA0 /* Phone.wav */; };
-		3D376D681FC3856E00E43527 /* MainC.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D376D661FC3856E00E43527 /* MainC.storyboard */; };
 		3D56BE0E1FC2BCBB00D6546B /* RoundedCornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */; };
 		3D8F435C1FA71B240095D344 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F435B1FA71B240095D344 /* AppDelegate.swift */; };
 		3D8F435E1FA71B240095D344 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F435D1FA71B240095D344 /* ViewController.swift */; };
-		3D8F43611FA71B240095D344 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8F435F1FA71B240095D344 /* Main.storyboard */; };
 		3D8F43631FA71B240095D344 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D8F43621FA71B240095D344 /* Assets.xcassets */; };
 		3D8F43661FA71B240095D344 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8F43641FA71B240095D344 /* LaunchScreen.storyboard */; };
 		3D8F43751FA773C40095D344 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D8F43741FA773C40095D344 /* NotificationCenter.framework */; };
@@ -23,8 +21,9 @@
 		3D8F437F1FA773C40095D344 /* Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3D8F43721FA773C40095D344 /* Today.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3DCF043C1FBB05C50063539A /* Ice.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3DCF043B1FBB05C50063539A /* Ice.wav */; };
 		3DCF04401FBECE7E0063539A /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCF043F1FBECE7E0063539A /* HelpViewController.swift */; };
+		3DDF15D31FC6C5F000F3C2D8 /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF15D21FC6C5EF00F3C2D8 /* notifications.png */; };
 		A9468FF51FAE446B00A8F934 /* Lorry.wav in Resources */ = {isa = PBXBuildFile; fileRef = A9468FF41FAE446B00A8F934 /* Lorry.wav */; };
-		A94817C01FC37859008E8552 /* MainB.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A94817BE1FC37859008E8552 /* MainB.storyboard */; };
+		A94817C01FC37859008E8552 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A94817BE1FC37859008E8552 /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,12 +54,10 @@
 		3D319BB11FB07D5D00DA5EA0 /* TimeToDo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimeToDo.png; sourceTree = "<group>"; };
 		3D319BB51FB0B67C00DA5EA0 /* Hyena.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Hyena.wav; sourceTree = "<group>"; };
 		3D319BB81FB0B6EE00DA5EA0 /* Phone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Phone.wav; sourceTree = "<group>"; };
-		3D376D671FC3856E00E43527 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Time To/Time To/Base.lproj/MainC.storyboard"; sourceTree = "<group>"; };
 		3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedCornerView.swift; sourceTree = "<group>"; };
 		3D8F43581FA71B240095D344 /* Time To.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Time To.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D8F435B1FA71B240095D344 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D8F435D1FA71B240095D344 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		3D8F43601FA71B240095D344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3D8F43621FA71B240095D344 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D8F43651FA71B240095D344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D8F43671FA71B240095D344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -72,9 +69,10 @@
 		3D8F437C1FA773C40095D344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DCF043B1FBB05C50063539A /* Ice.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Ice.wav; sourceTree = "<group>"; };
 		3DCF043F1FBECE7E0063539A /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		3DDF15D21FC6C5EF00F3C2D8 /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
 		3DED11E01FA86F6B00DFFFEC /* Today.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Today.entitlements; sourceTree = "<group>"; };
 		A9468FF41FAE446B00A8F934 /* Lorry.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Lorry.wav; sourceTree = "<group>"; };
-		A94817BF1FC37859008E8552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Time To/Base.lproj/MainB.storyboard"; sourceTree = "<group>"; };
+		A94817BF1FC37859008E8552 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Time To/Base.lproj/Main.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +108,7 @@
 		3D319BB31FB07D6300DA5EA0 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				3DDF15D21FC6C5EF00F3C2D8 /* notifications.png */,
 				3D319BB11FB07D5D00DA5EA0 /* TimeToDo.png */,
 			);
 			path = Images;
@@ -142,9 +141,7 @@
 				3D8F435D1FA71B240095D344 /* ViewController.swift */,
 				3DCF043F1FBECE7E0063539A /* HelpViewController.swift */,
 				3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */,
-				3D8F435F1FA71B240095D344 /* Main.storyboard */,
-				A94817BE1FC37859008E8552 /* MainB.storyboard */,
-				3D376D661FC3856E00E43527 /* MainC.storyboard */,
+				A94817BE1FC37859008E8552 /* Main.storyboard */,
 				3D8F43621FA71B240095D344 /* Assets.xcassets */,
 				3D319BB31FB07D6300DA5EA0 /* Images */,
 				3D319BAE1FB06CB100DA5EA0 /* Sounds */,
@@ -269,15 +266,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A94817C01FC37859008E8552 /* MainB.storyboard in Resources */,
+				A94817C01FC37859008E8552 /* Main.storyboard in Resources */,
 				3D8F43661FA71B240095D344 /* LaunchScreen.storyboard in Resources */,
 				3D319BB21FB07D5E00DA5EA0 /* TimeToDo.png in Resources */,
-				3D376D681FC3856E00E43527 /* MainC.storyboard in Resources */,
 				3D8F43631FA71B240095D344 /* Assets.xcassets in Resources */,
 				3D319BB71FB0B67C00DA5EA0 /* Hyena.wav in Resources */,
+				3DDF15D31FC6C5F000F3C2D8 /* notifications.png in Resources */,
 				3DCF043C1FBB05C50063539A /* Ice.wav in Resources */,
 				A9468FF51FAE446B00A8F934 /* Lorry.wav in Resources */,
-				3D8F43611FA71B240095D344 /* Main.storyboard in Resources */,
 				3D319BB91FB0B6EE00DA5EA0 /* Phone.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -323,22 +319,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		3D376D661FC3856E00E43527 /* MainC.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3D376D671FC3856E00E43527 /* Base */,
-			);
-			name = MainC.storyboard;
-			sourceTree = "<group>";
-		};
-		3D8F435F1FA71B240095D344 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3D8F43601FA71B240095D344 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		3D8F43641FA71B240095D344 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -355,12 +335,12 @@
 			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
-		A94817BE1FC37859008E8552 /* MainB.storyboard */ = {
+		A94817BE1FC37859008E8552 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A94817BF1FC37859008E8552 /* Base */,
 			);
-			name = MainB.storyboard;
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -60,17 +60,26 @@
                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QLQ-O4-GZX">
+                                <rect key="frame" x="8" y="40" width="32" height="30"/>
+                                <state key="normal" title="Stop"/>
+                                <connections>
+                                    <action selector="stopButtonPressed:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="l9d-Sn-taB"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="aha-yf-2lz" secondAttribute="trailing" constant="8" id="1PH-du-D02"/>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="GcN-lo-r42" secondAttribute="trailing" id="4gY-dm-pM6"/>
                             <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="ssy-KU-ocm" secondAttribute="leading" id="DmB-xs-uYR"/>
+                            <constraint firstItem="QLQ-O4-GZX" firstAttribute="centerY" secondItem="S3S-Oj-5AN" secondAttribute="centerY" id="EP8-fO-vbb"/>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="2qN-Ho-uen" secondAttribute="trailing" constant="8" id="FYP-XD-R7B"/>
                             <constraint firstItem="XVy-Pu-aeW" firstAttribute="centerX" secondItem="S3S-Oj-5AN" secondAttribute="centerX" id="Jfx-t6-97N"/>
                             <constraint firstItem="QkH-jf-khx" firstAttribute="top" secondItem="NHg-K3-pMS" secondAttribute="bottom" id="KfW-5s-lV5"/>
                             <constraint firstItem="JH7-Uw-flA" firstAttribute="centerX" secondItem="S3S-Oj-5AN" secondAttribute="centerX" id="NoS-kP-HVQ"/>
                             <constraint firstItem="XVy-Pu-aeW" firstAttribute="bottom" secondItem="ssy-KU-ocm" secondAttribute="bottom" id="S17-za-e6k"/>
                             <constraint firstItem="NHg-K3-pMS" firstAttribute="top" secondItem="aha-yf-2lz" secondAttribute="bottom" id="V7h-Ms-MHd"/>
+                            <constraint firstItem="QLQ-O4-GZX" firstAttribute="leading" secondItem="ssy-KU-ocm" secondAttribute="leading" constant="8" id="XeA-tg-063"/>
                             <constraint firstItem="GcN-lo-r42" firstAttribute="top" secondItem="ssy-KU-ocm" secondAttribute="top" constant="8" id="amN-EV-z7K"/>
                             <constraint firstItem="JH7-Uw-flA" firstAttribute="centerY" secondItem="S3S-Oj-5AN" secondAttribute="centerY" id="c9p-XK-sAp"/>
                             <constraint firstItem="ssy-KU-ocm" firstAttribute="trailing" secondItem="NHg-K3-pMS" secondAttribute="trailing" constant="8" id="dqu-Pw-xeb"/>
@@ -87,6 +96,7 @@
                         <outlet property="lastRestartDateLabel" destination="aha-yf-2lz" id="WUD-uH-ogO"/>
                         <outlet property="pendingTimeLabel" destination="JH7-Uw-flA" id="Bxh-eg-L3O"/>
                         <outlet property="previousDistanceLabel" destination="QkH-jf-khx" id="Eyg-HP-lH5"/>
+                        <outlet property="stopButton" destination="QLQ-O4-GZX" id="pFp-za-2ic"/>
                         <outlet property="widgetLabel" destination="GcN-lo-r42" id="Hj6-5z-SO8"/>
                     </connections>
                 </viewController>

@@ -23,11 +23,15 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var previewSoundSwitch: UISwitch!
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var countDownLabel: UILabel!
+    @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var restrictToCurrentLocationLabel: UILabel!
     @IBOutlet weak var restartCountdownWhenMovingLabel: UILabel!
     @IBOutlet weak var intervalStackView: UIStackView!
+    @IBOutlet weak var restrictToCurrentLocationInfoButton: UIButton!
+    @IBOutlet weak var restartCountdownWhenMovingInfoButton: UIButton!
     
-    var timer = Timer()
+    var setupInitialDisplayTimer = Timer()
+    var checkLocalizationServicesAuthorizationStatusTimer = Timer()
     var statusTimer: Timer?
     var countdownTimer: Timer?
     var sounds = ["Default","Ice","Lorry","Phone","Hyena"]
@@ -87,15 +91,16 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentStatus, forKey: "currentStatus")
             setSignificantLocationManager(enable: restrictToCurrentLocation && currentStatus)
             setStepsLocationManager(enable: restartCountdownWhenMoving && currentStatus)
+            animateTimeToButton()
             if currentStatus {
+                showMessage("Countdown started", clearMessage: true)
                 self.timeToButton.setTitle("Stop", for: .normal)
-                self.timeToButton.backgroundColor = UIColor(named: "stopColor")
                 self.statusLabel.text = formatDate(dateToFormat: nextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
                 if statusTimer == nil { statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true) }
                 if countdownTimer == nil { countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updatePendingTime), userInfo: nil, repeats: true) }
             } else {
+                showMessage("Countdown stopped", clearMessage: true)
                 self.timeToButton.setTitle("Start", for: .normal)
-                self.timeToButton.backgroundColor = UIColor(named: "startColor")
                 self.nextNotificationDate = nil
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 if statusTimer != nil {
@@ -126,14 +131,73 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
     
+    //MARK: - Authorization functions
+    
+    func checkNotificationsAuthorizationStatus() {
+        let centre = UNUserNotificationCenter.current()
+        centre.getNotificationSettings { (settings) in
+            if settings.authorizationStatus != UNAuthorizationStatus.authorized {
+                self.showNotificationsHelpViewController()
+            } else {
+                print("Notifications Authorised")
+            }
+        }
+    }
+    
+    func showNotificationsHelpViewController() {
+        DispatchQueue.main.async{
+            let dvc = self.storyboard?.instantiateViewController(withIdentifier: "HelpNotificationsViewController") as! HelpViewController
+            self.present(dvc, animated: true, completion: nil)
+        }
+    }
+    
+    @objc func checkLocalizationAuthorizationStatus() {
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways:
+            self.restartCountdownWhenMovingSwitch.isEnabled = true
+            self.restartCountdownWhenMovingSwitch.setOn(restartCountdownWhenMoving, animated: true)
+            self.restartCountdownWhenMovingInfoButton.tintColor = UIColor.blue
+            self.restrictToCurrentLocationSwitch.isEnabled = true
+            self.restrictToCurrentLocationSwitch.setOn(restrictToCurrentLocation, animated: true)
+            self.restrictToCurrentLocationInfoButton.tintColor = UIColor.blue
+            
+        case .authorizedWhenInUse:
+            self.restartCountdownWhenMovingSwitch.isEnabled = true
+            self.restartCountdownWhenMovingSwitch.setOn(restartCountdownWhenMoving, animated: true)
+            self.restartCountdownWhenMovingInfoButton.tintColor = UIColor.blue
+            self.restrictToCurrentLocationSwitch.isEnabled = false
+            self.restrictToCurrentLocationSwitch.setOn(false, animated: true)
+            self.restrictToCurrentLocationSwitch.setOn(false, animated: true)
+            self.restrictToCurrentLocationInfoButton.tintColor = UIColor.red
+            animateInfoButton(self.restrictToCurrentLocationInfoButton)
+            
+        default:
+            self.restartCountdownWhenMovingSwitch.isEnabled = false
+            self.restartCountdownWhenMovingSwitch.setOn(false, animated: true)
+            self.restartCountdownWhenMovingInfoButton.tintColor = UIColor.red
+            animateInfoButton(self.restartCountdownWhenMovingInfoButton)
+            self.restrictToCurrentLocationSwitch.isEnabled = false
+            self.restrictToCurrentLocationInfoButton.tintColor = UIColor.red
+            self.restrictToCurrentLocationSwitch.setOn(false, animated: true)
+            animateInfoButton(self.restrictToCurrentLocationInfoButton)
+            self.restrictToCurrentLocationSwitch.setOn(false, animated: true)
+            self.restartCountdownWhenMovingSwitch.setOn(false, animated: true)
+            
+        }
+    }
+
     //MARK: - Application lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         UNUserNotificationCenter.current().delegate = self
         // Update controls to saved status
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(setInitialControlsValues), userInfo: nil, repeats: false)
+        setupInitialDisplayTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(setInitialControlsValues), userInfo: nil, repeats: false)
         //RunLoop.main.add(timer, forMode: .commonModes)
+        messageLabel.textColor = UIColor(named: "messageTextColor")
+        checkLocalizationServicesAuthorizationStatusTimer = Timer.scheduledTimer(timeInterval: 10, target: self, selector: #selector(checkLocalizationAuthorizationStatus), userInfo: nil, repeats: true)
+        checkNotificationsAuthorizationStatus()
+        self.timeToButton.layer.borderColor = UIColor.lightGray.cgColor
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,6 +209,12 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         print("Restart Countdown when moving status is \(restartCountdownWhenMoving)")
         print("Preview Sound status is \(previewSound)")
         checkStatus()
+        checkLocalizationAuthorizationStatus()
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
     @objc func setInitialControlsValues() {
@@ -169,10 +239,18 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
         
         //Set the switches Values
-        self.restrictToCurrentLocationSwitch.setOn(restrictToCurrentLocation, animated: true)
-        self.restartCountdownWhenMovingSwitch.setOn(restartCountdownWhenMoving, animated: true)
         self.previewSoundSwitch.setOn(previewSound, animated: true)
+        
+        animateTimeToButton()
+        
     }
+    
+    @objc func checkStatus() {
+        let newStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
+        if newStatus != currentStatus { currentStatus = newStatus }
+    }
+    
+    //MARK: - Localization Functions
     
     func setStepsLocationManager(enable: Bool) {
         if enable {
@@ -233,34 +311,56 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                     lastLocationDate = Date()
                     print("User moved \(distanceInMetersFromPreviousLocation) mts, restarting countdown")
                     scheduleNotification()
-                    animateLabels()
+                    showMessage("Move detected, restarting countdown", clearMessage: true)
                 }
             }
         } else {
             print("Checking if need to turn off notifications")
             if Date() > restrictToCurrentLocationDateEnabled!.addingTimeInterval(60) {
-                //self.restrictToCurrentLocationLabel.layer.backgroundColor = UIColor.black.cgColor
                 currentStatus = false
+                showMessage("Location changed at \(formatDate(dateToFormat: Date(), dateStyle: .none, timeStyle: .medium))", clearMessage: false)
             }
         }
     }
     
-    func animateLabels() {
-        self.countDownLabel.backgroundColor = UIColor.clear
-        UIView.animate(withDuration: 1.0, animations: {
-            self.countDownLabel.layer.backgroundColor = UIColor.darkGray.cgColor
-            self.countDownLabel.textColor = UIColor.white
-            self.statusLabel.layer.backgroundColor = UIColor.darkGray.cgColor
-            self.statusLabel.textColor = UIColor.white
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
+    {
+        print("Error in location manager \(error)")
+    }
+    
+    //MARK: - Auxiliary functions (Messages, formatDate)
+    
+    func previewSoundMethod() {
+        
+        let currentSoundName = sounds[currentSound]
+        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            try AVAudioSession.sharedInstance().setActive(true)
+            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
+            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
+            
+            /* iOS 10 and earlier require the following line:
+             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
+            guard let player = player else { return }
+            
+            player.play()
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func showMessage(_ message: String, clearMessage: Bool) {
+        self.messageLabel.text = message
+        UIView.animate(withDuration: 2.0, animations: {
+            self.messageLabel.layer.backgroundColor = UIColor(named: "messageBackgroundColor")?.cgColor
         })
-        UIView.animate(withDuration: 1.0, delay: 1.0, options: UIViewAnimationOptions(), animations: {
-            self.countDownLabel.layer.backgroundColor = UIColor.white.cgColor
-            self.countDownLabel.textColor = UIColor.lightGray
-            self.statusLabel.layer.backgroundColor = UIColor.white.cgColor
-            self.statusLabel.textColor = UIColor.lightGray
-        }, completion: nil)
-        self.countDownLabel.backgroundColor = UIColor.clear
-        self.statusLabel.backgroundColor = UIColor.clear
+        if clearMessage {
+            UIView.animate(withDuration: 2.0, delay: 5.0, options: UIViewAnimationOptions(), animations: {
+                self.messageLabel.layer.backgroundColor = UIColor.clear.cgColor
+            }, completion: nil)
+        }
     }
     
     func formatDate(dateToFormat: Date, dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
@@ -270,19 +370,27 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         return formatter.string(from: dateToFormat)
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error)
-    {
-        print("Error in location manager \(error)")
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    func animateInfoButton(_ sender: UIButton) {
+        
+        sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        
+        UIView.animate(withDuration: 2.0,
+                       delay: 0,
+                       usingSpringWithDamping: CGFloat(0.20),
+                       initialSpringVelocity: CGFloat(6.0),
+                       options: UIViewAnimationOptions.allowUserInteraction,
+                       animations: {
+                        sender.transform = CGAffineTransform.identity
+        },
+                       completion: { Void in()  }
+        )
     }
 
-    @objc func checkStatus() {
-        let newStatus = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.bool(forKey: "currentStatus"))!
-        if newStatus != currentStatus { currentStatus = newStatus }
+    
+    func animateTimeToButton() {
+        UIView.animate(withDuration: 0.5, delay: 0, options: UIViewAnimationOptions(), animations: {
+            self.timeToButton.layer.backgroundColor = UIColor(named: self.currentStatus ? "stopColor" : "startColor")?.cgColor
+        }, completion: nil)
     }
     
     @objc func updatePendingTime() {
@@ -340,30 +448,18 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
     
-    func previewSoundMethod() {
-        
-        let currentSoundName = sounds[currentSound]
-        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            try AVAudioSession.sharedInstance().setActive(true)
-            /* The following line is required for the player to work on iOS 11. Change the file type accordingly*/
-            player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.mp3.rawValue)
-            
-            /* iOS 10 and earlier require the following line:
-             player = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileTypeMPEGLayer3) */
-            guard let player = player else { return }
-            
-            player.play()
-            
-        } catch let error {
-            print(error.localizedDescription)
-        }
-    }
-    
     //MARK: - Actions
     
+    @IBAction func timeToButtonTouchDown(_ sender: UIButton) {
+        sender.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
+    }
+    
+    @IBAction func timeToButtonTouchUpOutside(_ sender: UIButton) {
+        sender.transform = CGAffineTransform.identity
+    }
+    
     @IBAction func timeToButtonPressed(_ sender: UIButton) {
+        sender.transform = CGAffineTransform.identity
         if currentStatus {
             currentStatus = false
         } else {
@@ -424,11 +520,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         let centre = UNUserNotificationCenter.current()
         centre.getNotificationSettings { (settings) in
             if settings.authorizationStatus != UNAuthorizationStatus.authorized {
-                print("Notifications Not Authorised for this App")
-                let alertController = UIAlertController(title: "Time To Notifications", message: "Check that notifications are enabled at Preferences > Notifications for Time To App", preferredStyle: .alert)
-                let OkAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                alertController.addAction(OkAction)
-                DispatchQueue.main.async {self.present(alertController, animated: true, completion:nil)}
+                self.showNotificationsHelpViewController()
             } else {
                 print("Notifications Authorised")
                 let content = UNMutableNotificationContent()
@@ -467,6 +559,5 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
 }
-
 
 
