@@ -21,8 +21,22 @@ class HelpViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    @IBAction func changeIOSSettingsPressed(_ sender: Any) {
+        
+        let settingsUrl = URL(string: UIApplicationOpenSettingsURLString)
+        
+        if UIApplication.shared.canOpenURL(settingsUrl!) {
+            UIApplication.shared.open(settingsUrl!, completionHandler: { (success) in
+                print("Settings opened: \(success)") // Prints true
+            })
+        }
+    }
+    
+    
     @IBAction func closePressed(_ sender: UIButton) {
+                
         self.dismiss(animated: true, completion: nil)
+        
     }
     
     /*

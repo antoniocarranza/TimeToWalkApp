@@ -13,7 +13,7 @@ import CoreLocation
 
 class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
 
-    //MARK: - Outlets and Variables
+    //MARK: - Outlets
     
     @IBOutlet weak var intervalTimer: UIDatePicker!
     @IBOutlet weak var soundSelector: UIPickerView!
@@ -29,6 +29,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @IBOutlet weak var intervalStackView: UIStackView!
     @IBOutlet weak var restrictToCurrentLocationInfoButton: UIButton!
     @IBOutlet weak var restartCountdownWhenMovingInfoButton: UIButton!
+    
+    //MARK: - Variables
     
     var setupInitialDisplayTimer = Timer()
     var checkLocalizationServicesAuthorizationStatusTimer = Timer()
@@ -153,7 +155,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     @objc func checkLocalizationAuthorizationStatus() {
         switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways:
+        case .authorizedAlways, .notDetermined:
             self.restartCountdownWhenMovingSwitch.isEnabled = true
             self.restartCountdownWhenMovingSwitch.setOn(restartCountdownWhenMoving, animated: true)
             self.restartCountdownWhenMovingInfoButton.tintColor = UIColor.blue
@@ -171,7 +173,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             self.restrictToCurrentLocationInfoButton.tintColor = UIColor.red
             animateInfoButton(self.restrictToCurrentLocationInfoButton)
             
-        default:
+        case .denied, .restricted:
             self.restartCountdownWhenMovingSwitch.isEnabled = false
             self.restartCountdownWhenMovingSwitch.setOn(false, animated: true)
             self.restartCountdownWhenMovingInfoButton.tintColor = UIColor.red
