@@ -14,8 +14,6 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     @IBOutlet weak var widgetLabel: UILabel!
     @IBOutlet weak var pendingTimeLabel: UILabel!
-    @IBOutlet weak var lastRestartDateLabel: UILabel!
-    @IBOutlet weak var previousDistanceLabel: UILabel!
     @IBOutlet weak var stopButton: UIButton!
     
     var timer: Timer?
@@ -98,9 +96,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         if currentStatus {
             var tmpNextNotificationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "nextNotificationDate") as? Date
             let tmpLastLocationDate = UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.object(forKey: "lastLocationDate") as? Date
-            if tmpLastLocationDate != nil { self.lastRestartDateLabel.text = formatDate(dateToFormat: tmpLastLocationDate!, dateStyle: .none, timeStyle: .short) }
             let tmpPreviousDistance = round((UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "distanceInMetersFromPreviousLocation"))!)
-            self.previousDistanceLabel.text = "\(tmpPreviousDistance) mts"
             if tmpNextNotificationDate != nil {
                 self.widgetLabel.text = formatDate(dateToFormat: tmpNextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
                 let now = Date()

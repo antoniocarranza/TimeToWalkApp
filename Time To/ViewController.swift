@@ -95,7 +95,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             setStepsLocationManager(enable: restartCountdownWhenMoving && currentStatus)
             animateTimeToButton()
             if currentStatus {
-                showMessage("Countdown started", clearMessage: true)
+                showMessage(NSLocalizedString("Countdown started", comment: ""), clearMessage: true)
                 self.timeToButton.setTitle("Stop", for: .normal)
                 self.statusLabel.text = formatDate(dateToFormat: nextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
                 if statusTimer == nil { statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true) }
