@@ -235,6 +235,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         
         if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
             self.intervalTimer.setDate(intervalDate, animated: true)
+            self.intervalTimer.maximumDate = Calendar(identifier: .gregorian).date(from: c)
         }
         
         //Set the Sound selected for Notification
