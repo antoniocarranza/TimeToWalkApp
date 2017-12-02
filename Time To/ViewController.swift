@@ -11,11 +11,16 @@ import UserNotifications
 import AVFoundation
 import CoreLocation
 
+struct TTDInterval {
+    let timeInterval: TimeInterval
+    let title: String
+}
+
 class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
 
     //MARK: - Outlets
     
-    @IBOutlet weak var intervalTimer: UIDatePicker!
+    @IBOutlet weak var intervalTimer: UIPickerView!
     @IBOutlet weak var soundSelector: UIPickerView!
     @IBOutlet weak var timeToButton: UIButton!
     @IBOutlet weak var restrictToCurrentLocationSwitch: UISwitch!
@@ -36,6 +41,15 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     var checkLocalizationServicesAuthorizationStatusTimer = Timer()
     var statusTimer: Timer?
     var countdownTimer: Timer?
+    var intervals: [TTDInterval] = [TTDInterval(timeInterval: (1*60), title: "1 minute"),
+                                    TTDInterval(timeInterval: (15*60), title: "15 minutes"),
+                                    TTDInterval(timeInterval: (30*60), title: "30 minutes"),
+                                    TTDInterval(timeInterval: (45*69), title: "45 minutes"),
+                                    TTDInterval(timeInterval: (60*60), title: "1 hour"),
+                                    TTDInterval(timeInterval: (75*60), title: "1 hour and 15 minutes"),
+                                    TTDInterval(timeInterval: (90*60), title: "1 hour and 30 minutes"),
+                                    TTDInterval(timeInterval: (105*60), title: "1 hour and 45 minutes"),
+                                    TTDInterval(timeInterval: (105*60), title: "2 hours, to late! 😡")]
     var sounds = ["Default","Ice","Lorry","Phone","Hyena"]
     var player: AVAudioPlayer?
     var stepsLocationManager:CLLocationManager!
@@ -222,21 +236,21 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     @objc func setInitialControlsValues() {
         
         //Set the Interval Picker to last saved value or to 1 hour
-        if currentInterval == 0 {currentInterval = 3600}
-        
-        var c = DateComponents()
-        
-        c.year = Calendar.current.component(.year, from: Date())
-        c.month = Calendar.current.component(.month, from: Date())
-        c.day = Calendar.current.component(.day, from: Date())
-        c.hour = 0
-        c.minute = 0
-        c.second = Int(currentInterval)
-        
-        if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
-            self.intervalTimer.setDate(intervalDate, animated: true)
-            self.intervalTimer.maximumDate = Calendar(identifier: .gregorian).date(from: c)
-        }
+//        if currentInterval == 0 {currentInterval = 3600}
+//
+//        var c = DateComponents()
+//
+//        c.year = Calendar.current.component(.year, from: Date())
+//        c.month = Calendar.current.component(.month, from: Date())
+//        c.day = Calendar.current.component(.day, from: Date())
+//        c.hour = 0
+//        c.minute = 0
+//        c.second = Int(currentInterval)
+//
+//        if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
+//            self.intervalTimer.setDate(intervalDate, animated: true)
+//            self.intervalTimer.maximumDate = Calendar(identifier: .gregorian).date(from: c)
+//        }
         
         //Set the Sound selected for Notification
         self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
@@ -415,12 +429,11 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     }
     
     //MARK: - DataPicker delegates
-    @IBAction func intervalChanged(_ sender: UIDatePicker) {
-        currentInterval = intervalTimer.countDownDuration
-    }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch pickerView.tag {
+        case 0:
+            currentInterval = intervals[row].timeInterval
         case 1:
             currentSound = row
             if previewSound { previewSoundMethod() }
@@ -435,6 +448,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView.tag {
+        case 0:
+            return intervals.count
         case 1:
             return sounds.count
         default:
@@ -444,6 +459,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch pickerView.tag {
+        case 0:
+            return intervals[row].title
         case 1:
             return sounds[row]
         default:
@@ -516,8 +533,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     func scheduleNotification() {
         
-        let currentSelectedInterval: TimeInterval = intervalTimer.countDownDuration
-        let lastNotificationInterval: TimeInterval = intervalTimer.countDownDuration
+        let currentSelectedInterval: TimeInterval = intervals[intervalTimer.selectedRow(inComponent: 0)].timeInterval
+        let lastNotificationInterval: TimeInterval = intervals[intervalTimer.selectedRow(inComponent: 0)].timeInterval
         let soundName: String = "\(sounds[currentSound]).wav"
         
         let centre = UNUserNotificationCenter.current()

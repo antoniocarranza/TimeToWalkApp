@@ -42,12 +42,9 @@
                                                     <constraint firstItem="xlw-kz-Y1r" firstAttribute="centerX" secondItem="Rwu-dA-UsN" secondAttribute="centerX" id="vH9-us-Cbn"/>
                                                 </constraints>
                                             </view>
-                                            <datePicker contentMode="scaleToFill" verticalHuggingPriority="246" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="countDownTimer" countDownDuration="300" minuteInterval="1" useCurrentDate="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8b9-Ma-x5v">
+                                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wou-Ze-bTA">
                                                 <rect key="frame" x="0.0" y="25" width="359" height="216"/>
-                                                <date key="date" timeIntervalSinceReferenceDate="-978310794.11798">
-                                                    <!--1969-12-31 23:00:05 +0000-->
-                                                </date>
-                                            </datePicker>
+                                            </pickerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="1md-jv-Ndf" userLabel="CountDown Options Stack View">
                                                 <rect key="frame" x="0.0" y="241" width="359" height="70"/>
                                                 <subviews>
