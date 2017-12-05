@@ -107,8 +107,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                     }
                     nextNotificationDate = tmpNextNotificationDate
                 }
-                let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: tmpNextNotificationDate!)
-                pendingTimeLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+                let formatter = DateComponentsFormatter()
+                formatter.unitsStyle = .positional
+                formatter.allowedUnits = [.second, .minute, .hour]
+                let timeLeft = formatter.string(from: now, to: tmpNextNotificationDate!)
+                pendingTimeLabel.text = timeLeft
             } else {
                 print("Next Notification Date is nil")
             }

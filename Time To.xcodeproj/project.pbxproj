@@ -10,7 +10,6 @@
 		3D319BB21FB07D5E00DA5EA0 /* TimeToDo.png in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB11FB07D5D00DA5EA0 /* TimeToDo.png */; };
 		3D319BB71FB0B67C00DA5EA0 /* Hyena.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB51FB0B67C00DA5EA0 /* Hyena.wav */; };
 		3D319BB91FB0B6EE00DA5EA0 /* Phone.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3D319BB81FB0B6EE00DA5EA0 /* Phone.wav */; };
-		3D56BE0E1FC2BCBB00D6546B /* RoundedCornerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */; };
 		3D8F435C1FA71B240095D344 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F435B1FA71B240095D344 /* AppDelegate.swift */; };
 		3D8F435E1FA71B240095D344 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F435D1FA71B240095D344 /* ViewController.swift */; };
 		3D8F43631FA71B240095D344 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D8F43621FA71B240095D344 /* Assets.xcassets */; };
@@ -19,6 +18,11 @@
 		3D8F43781FA773C40095D344 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D8F43771FA773C40095D344 /* TodayViewController.swift */; };
 		3D8F437B1FA773C40095D344 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D8F43791FA773C40095D344 /* MainInterface.storyboard */; };
 		3D8F437F1FA773C40095D344 /* Today.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3D8F43721FA773C40095D344 /* Today.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3DA5E3291FD5376C006BF702 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5E3271FD5376C006BF702 /* Localizable.strings */; };
+		3DA5E32B1FD53908006BF702 /* Doberman.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5E32A1FD53908006BF702 /* Doberman.wav */; };
+		3DA5E32D1FD53A00006BF702 /* Alataque.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5E32C1FD53A00006BF702 /* Alataque.mp3 */; };
+		3DA5E32F1FD53A11006BF702 /* Chiquito.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5E32E1FD53A11006BF702 /* Chiquito.mp3 */; };
+		3DA5E3361FD54307006BF702 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3DA5E3341FD54307006BF702 /* InfoPlist.strings */; };
 		3DCF043C1FBB05C50063539A /* Ice.wav in Resources */ = {isa = PBXBuildFile; fileRef = 3DCF043B1FBB05C50063539A /* Ice.wav */; };
 		3DCF04401FBECE7E0063539A /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DCF043F1FBECE7E0063539A /* HelpViewController.swift */; };
 		3DDF15D31FC6C5F000F3C2D8 /* notifications.png in Resources */ = {isa = PBXBuildFile; fileRef = 3DDF15D21FC6C5EF00F3C2D8 /* notifications.png */; };
@@ -54,19 +58,27 @@
 		3D319BB11FB07D5D00DA5EA0 /* TimeToDo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TimeToDo.png; sourceTree = "<group>"; };
 		3D319BB51FB0B67C00DA5EA0 /* Hyena.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Hyena.wav; sourceTree = "<group>"; };
 		3D319BB81FB0B6EE00DA5EA0 /* Phone.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Phone.wav; sourceTree = "<group>"; };
-		3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoundedCornerView.swift; sourceTree = "<group>"; };
 		3D8F43581FA71B240095D344 /* Time To.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Time To.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D8F435B1FA71B240095D344 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D8F435D1FA71B240095D344 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3D8F43621FA71B240095D344 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D8F43651FA71B240095D344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		3D8F43671FA71B240095D344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D8F436D1FA738D20095D344 /* Time To.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Time To.entitlements"; sourceTree = "<group>"; };
 		3D8F43721FA773C40095D344 /* Today.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Today.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D8F43741FA773C40095D344 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		3D8F43771FA773C40095D344 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 		3D8F437A1FA773C40095D344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		3D8F437C1FA773C40095D344 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DA5E3211FD4B2D7006BF702 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = "Time To/es.lproj/Main.strings"; sourceTree = "<group>"; };
+		3DA5E3231FD4B2D7006BF702 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainInterface.strings; sourceTree = "<group>"; };
+		3DA5E3281FD5376C006BF702 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = "Time To/Base.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		3DA5E32A1FD53908006BF702 /* Doberman.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Doberman.wav; sourceTree = "<group>"; };
+		3DA5E32C1FD53A00006BF702 /* Alataque.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Alataque.mp3; sourceTree = "<group>"; };
+		3DA5E32E1FD53A11006BF702 /* Chiquito.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Chiquito.mp3; sourceTree = "<group>"; };
+		3DA5E3301FD53FE3006BF702 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = "Time To/es.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		3DA5E3311FD541E3006BF702 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Base; path = Base.lproj/Info.plist; sourceTree = "<group>"; };
+		3DA5E3351FD54307006BF702 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		3DA5E3381FD543EB006BF702 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3DCF043B1FBB05C50063539A /* Ice.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Ice.wav; sourceTree = "<group>"; };
 		3DCF043F1FBECE7E0063539A /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		3DDF15D21FC6C5EF00F3C2D8 /* notifications.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = notifications.png; sourceTree = "<group>"; };
@@ -97,6 +109,9 @@
 		3D319BAE1FB06CB100DA5EA0 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				3DA5E32C1FD53A00006BF702 /* Alataque.mp3 */,
+				3DA5E32E1FD53A11006BF702 /* Chiquito.mp3 */,
+				3DA5E32A1FD53908006BF702 /* Doberman.wav */,
 				3DCF043B1FBB05C50063539A /* Ice.wav */,
 				A9468FF41FAE446B00A8F934 /* Lorry.wav */,
 				3D319BB81FB0B6EE00DA5EA0 /* Phone.wav */,
@@ -140,13 +155,14 @@
 				3D8F435B1FA71B240095D344 /* AppDelegate.swift */,
 				3D8F435D1FA71B240095D344 /* ViewController.swift */,
 				3DCF043F1FBECE7E0063539A /* HelpViewController.swift */,
-				3D56BE0D1FC2BCBB00D6546B /* RoundedCornerView.swift */,
+				3DA5E3341FD54307006BF702 /* InfoPlist.strings */,
+				3DA5E3271FD5376C006BF702 /* Localizable.strings */,
 				A94817BE1FC37859008E8552 /* Main.storyboard */,
 				3D8F43621FA71B240095D344 /* Assets.xcassets */,
 				3D319BB31FB07D6300DA5EA0 /* Images */,
 				3D319BAE1FB06CB100DA5EA0 /* Sounds */,
 				3D8F43641FA71B240095D344 /* LaunchScreen.storyboard */,
-				3D8F43671FA71B240095D344 /* Info.plist */,
+				3DA5E3321FD541E3006BF702 /* Info.plist */,
 			);
 			path = "Time To";
 			sourceTree = "<group>";
@@ -249,6 +265,7 @@
 			knownRegions = (
 				en,
 				Base,
+				es,
 			);
 			mainGroup = 3D8F434F1FA71B240095D344;
 			productRefGroup = 3D8F43591FA71B240095D344 /* Products */;
@@ -267,11 +284,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				A94817C01FC37859008E8552 /* Main.storyboard in Resources */,
+				3DA5E3361FD54307006BF702 /* InfoPlist.strings in Resources */,
 				3D8F43661FA71B240095D344 /* LaunchScreen.storyboard in Resources */,
 				3D319BB21FB07D5E00DA5EA0 /* TimeToDo.png in Resources */,
 				3D8F43631FA71B240095D344 /* Assets.xcassets in Resources */,
 				3D319BB71FB0B67C00DA5EA0 /* Hyena.wav in Resources */,
+				3DA5E3291FD5376C006BF702 /* Localizable.strings in Resources */,
+				3DA5E32B1FD53908006BF702 /* Doberman.wav in Resources */,
+				3DA5E32F1FD53A11006BF702 /* Chiquito.mp3 in Resources */,
 				3DDF15D31FC6C5F000F3C2D8 /* notifications.png in Resources */,
+				3DA5E32D1FD53A00006BF702 /* Alataque.mp3 in Resources */,
 				3DCF043C1FBB05C50063539A /* Ice.wav in Resources */,
 				A9468FF51FAE446B00A8F934 /* Lorry.wav in Resources */,
 				3D319BB91FB0B6EE00DA5EA0 /* Phone.wav in Resources */,
@@ -296,7 +318,6 @@
 				3D8F435E1FA71B240095D344 /* ViewController.swift in Sources */,
 				3DCF04401FBECE7E0063539A /* HelpViewController.swift in Sources */,
 				3D8F435C1FA71B240095D344 /* AppDelegate.swift in Sources */,
-				3D56BE0E1FC2BCBB00D6546B /* RoundedCornerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,14 +352,42 @@
 			isa = PBXVariantGroup;
 			children = (
 				3D8F437A1FA773C40095D344 /* Base */,
+				3DA5E3231FD4B2D7006BF702 /* es */,
 			);
 			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
+		3DA5E3271FD5376C006BF702 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DA5E3281FD5376C006BF702 /* Base */,
+				3DA5E3301FD53FE3006BF702 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		3DA5E3321FD541E3006BF702 /* Info.plist */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DA5E3311FD541E3006BF702 /* Base */,
+			);
+			name = Info.plist;
+			sourceTree = "<group>";
+		};
+		3DA5E3341FD54307006BF702 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DA5E3351FD54307006BF702 /* Base */,
+				3DA5E3381FD543EB006BF702 /* es */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		A94817BE1FC37859008E8552 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A94817BF1FC37859008E8552 /* Base */,
+				3DA5E3211FD4B2D7006BF702 /* es */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -350,6 +399,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -407,6 +457,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

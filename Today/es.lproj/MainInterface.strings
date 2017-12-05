@@ -1,0 +1,12 @@
+
+/* Class = "UILabel"; text = "Nothing scheduled"; ObjectID = "GcN-lo-r42"; */
+"GcN-lo-r42.text" = "Nada programado";
+
+/* Class = "UILabel"; text = "-"; ObjectID = "JH7-Uw-flA"; */
+"JH7-Uw-flA.text" = "-";
+
+/* Class = "UIButton"; normalTitle = "Stop"; ObjectID = "QLQ-O4-GZX"; */
+"QLQ-O4-GZX.normalTitle" = "▪️Detener";
+
+/* Class = "UIButton"; normalTitle = "Change Settings"; ObjectID = "XVy-Pu-aeW"; */
+"XVy-Pu-aeW.normalTitle" = "⚙️ Cambiar Ajustes";

@@ -16,6 +16,10 @@ struct TTDInterval {
     let title: String
 }
 
+struct TTDSound {
+    let fileName: String
+    let title: String
+}
 class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
 
     //MARK: - Outlets
@@ -41,16 +45,22 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     var checkLocalizationServicesAuthorizationStatusTimer = Timer()
     var statusTimer: Timer?
     var countdownTimer: Timer?
-    var intervals: [TTDInterval] = [TTDInterval(timeInterval: (1*60), title: "1 minute"),
-                                    TTDInterval(timeInterval: (15*60), title: "15 minutes"),
-                                    TTDInterval(timeInterval: (30*60), title: "30 minutes"),
-                                    TTDInterval(timeInterval: (45*69), title: "45 minutes"),
-                                    TTDInterval(timeInterval: (60*60), title: "1 hour"),
-                                    TTDInterval(timeInterval: (75*60), title: "1 hour and 15 minutes"),
-                                    TTDInterval(timeInterval: (90*60), title: "1 hour and 30 minutes"),
-                                    TTDInterval(timeInterval: (105*60), title: "1 hour and 45 minutes"),
-                                    TTDInterval(timeInterval: (105*60), title: "2 hours, to late! 😡")]
-    var sounds = ["Default","Ice","Lorry","Phone","Hyena"]
+    var intervals: [TTDInterval] = [TTDInterval(timeInterval: (15*4), title: NSLocalizedString("15 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (30*60), title: NSLocalizedString("30 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (45*60), title: NSLocalizedString("45 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (60*60), title: NSLocalizedString("1 hour",comment: "")),
+                                    TTDInterval(timeInterval: (75*60), title: NSLocalizedString("1 hour and 15 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (90*60), title: NSLocalizedString("1 hour and 30 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (105*60), title: NSLocalizedString("1 hour and 45 minutes",comment: "")),
+                                    TTDInterval(timeInterval: (120*60), title: NSLocalizedString("2 hours, too late! 😡",comment: ""))]
+    var sounds: [TTDSound] = [TTDSound(fileName: "", title: NSLocalizedString("Default", comment: "")),
+                               TTDSound(fileName: "Ice.wav", title: NSLocalizedString("Ice", comment: "")),
+                               TTDSound(fileName: "Lorry.wav", title: NSLocalizedString("Lorry Horn", comment: "")),
+                               TTDSound(fileName: "Phone.wav", title: NSLocalizedString("Phone Ring", comment: "")),
+                               TTDSound(fileName: "Doberman.wav", title: NSLocalizedString("Doberman", comment: "")),
+                               TTDSound(fileName: "Chiquito.mp3", title: NSLocalizedString("Chiquito", comment: "")),
+                               TTDSound(fileName: "Alataque.mp3", title: NSLocalizedString("Al Ataque", comment: "")),
+                               TTDSound(fileName: "Hyena.wav", title: NSLocalizedString("Hyena", comment: ""))]
     var player: AVAudioPlayer?
     var stepsLocationManager:CLLocationManager!
     var significantLocationManager:CLLocationManager!
@@ -95,6 +105,13 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             UserDefaults(suiteName: "group.es.365d.Time-To-Do")!.set(currentSound, forKey: "currentSound")
         }
     }
+    var currentIntervalRow: Int = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.integer(forKey: "currentTimeIntervalRow"))! {
+        didSet {
+            print("Selected Interval Row saved to \(currentIntervalRow)")
+            UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.set(currentIntervalRow, forKey: "currentTimeIntervalRow")
+        }
+    }
+    
     var currentInterval: TimeInterval = (UserDefaults(suiteName: "group.es.365d.Time-To-Do")?.double(forKey: "currentTimeInterval"))! {
         didSet {
             print("Selected Interval saved to \(currentInterval)")
@@ -110,13 +127,17 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
             animateTimeToButton()
             if currentStatus {
                 showMessage(NSLocalizedString("Countdown started", comment: ""), clearMessage: true)
-                self.timeToButton.setTitle("Stop", for: .normal)
+                self.intervalTimer.isUserInteractionEnabled = false
+                self.timeToButton.setTitle(NSLocalizedString("Stop", comment: ""), for: .normal)
+                self.countDownLabel.textColor = UIColor(named: "startColor")
                 self.statusLabel.text = formatDate(dateToFormat: nextNotificationDate!, dateStyle: .medium, timeStyle: .medium)
                 if statusTimer == nil { statusTimer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(checkStatus), userInfo: nil, repeats: true) }
                 if countdownTimer == nil { countdownTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updatePendingTime), userInfo: nil, repeats: true) }
             } else {
-                showMessage("Countdown stopped", clearMessage: true)
-                self.timeToButton.setTitle("Start", for: .normal)
+                self.intervalTimer.isUserInteractionEnabled = true
+                self.countDownLabel.textColor = UIColor.white
+                showMessage(NSLocalizedString("Countdown stopped", comment: ""), clearMessage: true)
+                self.timeToButton.setTitle(NSLocalizedString("Start", comment: ""), for: .normal)
                 self.nextNotificationDate = nil
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 if statusTimer != nil {
@@ -153,16 +174,17 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         let centre = UNUserNotificationCenter.current()
         centre.getNotificationSettings { (settings) in
             if settings.authorizationStatus != UNAuthorizationStatus.authorized {
-                self.showNotificationsHelpViewController()
+                self.showHelpViewController(message: NSLocalizedString("NotificationsHelp", comment: ""))
             } else {
                 print("Notifications Authorised")
             }
         }
     }
     
-    func showNotificationsHelpViewController() {
+    func showHelpViewController(message: String) {
         DispatchQueue.main.async{
-            let dvc = self.storyboard?.instantiateViewController(withIdentifier: "HelpNotificationsViewController") as! HelpViewController
+            let dvc = self.storyboard?.instantiateViewController(withIdentifier: "HelpViewController") as! HelpViewController
+            dvc.message = message
             self.present(dvc, animated: true, completion: nil)
         }
     }
@@ -219,6 +241,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     override func viewWillAppear(_ animated: Bool) {
         print("Current Status \(currentStatus)")
         print("Current Interval \(currentInterval)")
+        print("Current Interval row \(currentIntervalRow)")
         print("Current Sound \(currentSound)")
         print("Next Notification Date \(nextNotificationDate?.description ?? "not set or nil")")
         print("Restrict to current location status is \(restrictToCurrentLocation)")
@@ -235,22 +258,12 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     @objc func setInitialControlsValues() {
         
-        //Set the Interval Picker to last saved value or to 1 hour
-//        if currentInterval == 0 {currentInterval = 3600}
-//
-//        var c = DateComponents()
-//
-//        c.year = Calendar.current.component(.year, from: Date())
-//        c.month = Calendar.current.component(.month, from: Date())
-//        c.day = Calendar.current.component(.day, from: Date())
-//        c.hour = 0
-//        c.minute = 0
-//        c.second = Int(currentInterval)
-//
-//        if let intervalDate = Calendar(identifier: .gregorian).date(from: c) {
-//            self.intervalTimer.setDate(intervalDate, animated: true)
-//            self.intervalTimer.maximumDate = Calendar(identifier: .gregorian).date(from: c)
-//        }
+        //Set the Interval Picker
+        if currentInterval == 0 {
+            currentInterval = 3600
+            currentIntervalRow = 3
+        }
+        self.intervalTimer.selectRow(currentIntervalRow, inComponent: 0, animated: true)
         
         //Set the Sound selected for Notification
         self.soundSelector.selectRow(currentSound, inComponent: 0, animated: true)
@@ -259,7 +272,6 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         self.previewSoundSwitch.setOn(previewSound, animated: true)
         
         animateTimeToButton()
-        
     }
     
     @objc func checkStatus() {
@@ -322,20 +334,21 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         print("Current Location is \(userLocation)")
         
         if manager.distanceFilter == 10 {
-            if Date() > restartCountdownWhenMovingDateEnabled!.addingTimeInterval(10) {
+            if Date() > restartCountdownWhenMovingDateEnabled!.addingTimeInterval(60) {
                 print("Checking is need to restart counter")
                 if self.restartCountdownWhenMoving && distanceInMetersFromPreviousLocation > 10 {
                     lastLocationDate = Date()
                     print("User moved \(distanceInMetersFromPreviousLocation) mts, restarting countdown")
                     scheduleNotification()
-                    showMessage("Move detected, restarting countdown", clearMessage: true)
+                    showMessage(NSLocalizedString("Move detected, restarting countdown", comment: ""), clearMessage: true)
                 }
             }
         } else {
             print("Checking if need to turn off notifications")
-            if Date() > restrictToCurrentLocationDateEnabled!.addingTimeInterval(60) {
+            if Date() > restrictToCurrentLocationDateEnabled!.addingTimeInterval(300) {
                 currentStatus = false
-                showMessage("Location changed at \(formatDate(dateToFormat: Date(), dateStyle: .none, timeStyle: .medium))", clearMessage: false)
+                let msg = String(format: NSLocalizedString("Location changed at %@", comment: ""), formatDate(dateToFormat: Date(), dateStyle: .none, timeStyle: .medium))
+                showMessage(msg, clearMessage: false)
             }
         }
     }
@@ -349,8 +362,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
     
     func previewSoundMethod() {
         
-        let currentSoundName = sounds[currentSound]
-        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "wav") else { return }
+        let currentSoundName = sounds[currentSound].fileName
+        guard let url = Bundle.main.url(forResource: currentSoundName, withExtension: "") else { return }
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             try AVAudioSession.sharedInstance().setActive(true)
@@ -419,10 +432,13 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 while tmpNextNotificationDate! < now {
                     tmpNextNotificationDate = tmpNextNotificationDate!.addingTimeInterval(lastNotificacionInterval)
                 }
-                //nextNotificationDate = tmpNextNotificationDate
+                //nextNotificationDate = tmpNextNotificationDate //TODO: Revisar si incluir
             }
-            let components = Calendar.current.dateComponents([.hour, .minute, .second], from: now, to: tmpNextNotificationDate!)
-            countDownLabel.text = "\(String(format: "%02d", components.minute ?? "00")):\(String(format: "%02d", components.second ?? "00"))"
+            let formatter = DateComponentsFormatter()
+            formatter.unitsStyle = .full
+            formatter.allowedUnits = [.second, .minute, .hour]
+            let timeLeft = formatter.string(from: now, to: tmpNextNotificationDate!)
+            countDownLabel.text = timeLeft
         } else {
             print("Next Notification Date is nil")
         }
@@ -434,6 +450,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         switch pickerView.tag {
         case 0:
             currentInterval = intervals[row].timeInterval
+            currentIntervalRow = row
         case 1:
             currentSound = row
             if previewSound { previewSoundMethod() }
@@ -462,7 +479,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         case 0:
             return intervals[row].title
         case 1:
-            return sounds[row]
+            return sounds[row].title
         default:
             return "Unrecognized picker"
         }
@@ -497,6 +514,14 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
 
     @IBAction func previewSoundValueChanged(_ sender: UISwitch) {
         self.previewSound = sender.isOn
+    }
+    
+    @IBAction func restrictLocationInfoPressed(_ sender: UIButton) {
+        self.showHelpViewController(message: NSLocalizedString("RestrictLocationHelp", comment: ""))
+    }
+    
+    @IBAction func restartMovingInfoPressed(_ sender: UIButton) {
+        self.showHelpViewController(message: NSLocalizedString("RestartCountdownHelp", comment: ""))
     }
     
     //MARK: - Notifications scheduller
@@ -535,22 +560,21 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         
         let currentSelectedInterval: TimeInterval = intervals[intervalTimer.selectedRow(inComponent: 0)].timeInterval
         let lastNotificationInterval: TimeInterval = intervals[intervalTimer.selectedRow(inComponent: 0)].timeInterval
-        let soundName: String = "\(sounds[currentSound]).wav"
         
         let centre = UNUserNotificationCenter.current()
         centre.getNotificationSettings { (settings) in
             if settings.authorizationStatus != UNAuthorizationStatus.authorized {
-                self.showNotificationsHelpViewController()
+                self.showHelpViewController(message: NSLocalizedString("NotificationsHelp", comment: ""))
             } else {
                 print("Notifications Authorised")
                 let content = UNMutableNotificationContent()
                 content.title = NSString.localizedUserNotificationString(forKey: "Time To Do", arguments: nil)
-                content.body = NSString.localizedUserNotificationString(forKey: "Something diferent", arguments: nil)
+                content.body = NSString.localizedUserNotificationString(forKey: "A little walk through the office", arguments: nil)
                 content.categoryIdentifier = "Category"
                 if self.currentSound == 0 {
                     content.sound = UNNotificationSound.default()
                 } else {
-                    content.sound = UNNotificationSound(named: soundName)
+                    content.sound = UNNotificationSound(named: self.sounds[self.currentSound].fileName)
                 }
                 
                 // Schedule the notification.
@@ -565,7 +589,7 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
                 center.add(request) { (error : Error?) in
                     if let theError = error {
                         print("Error: \(theError.localizedDescription)")
-                        let alertController = UIAlertController(title: "Time To Notifications", message: "Something went wrong and notification could not be created, sorry.\n\(theError.localizedDescription)", preferredStyle: .alert)
+                        let alertController = UIAlertController(title: "Time To Notifications", message: "Something went wrong and notification could not be created, sorry.", preferredStyle: .alert)
                         let OKAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                         alertController.addAction(OKAction)
                         DispatchQueue.main.async {self.present(alertController, animated: true, completion:nil)}
@@ -579,5 +603,4 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate, UIPick
         }
     }
 }
-
 

@@ -9,13 +9,21 @@
 import UIKit
 
 class HelpViewController: UIViewController {
-
+    @IBOutlet weak var helpText: UITextView!
+    
+    var message: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        if message != nil {
+            self.helpText.text = message!
+        }
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -32,11 +40,8 @@ class HelpViewController: UIViewController {
         }
     }
     
-    
     @IBAction func closePressed(_ sender: UIButton) {
-                
         self.dismiss(animated: true, completion: nil)
-        
     }
     
     /*

@@ -1,0 +1,54 @@
+
+/* Class = "UILabel"; text = "Select interval between notifications"; ObjectID = "0ch-0J-68e"; */
+"0ch-0J-68e.text" = "Intervalo entre notificaciones";
+
+/* Class = "UIButton"; normalTitle = "Change iOS Settings"; ObjectID = "0lT-ai-cxk"; */
+"0lT-ai-cxk.normalTitle" = "Cambiar ajustes";
+
+/* Class = "UILabel"; text = "00:00"; ObjectID = "472-SA-iMp"; */
+"472-SA-iMp.text" = "00:00";
+
+/* Class = "UILabel"; text = "Restrict to current location"; ObjectID = "6Ik-Yp-Nmj"; */
+"6Ik-Yp-Nmj.text" = "Desactivar al cambiar de ubicación";
+
+/* Class = "UIButton"; normalTitle = "Start"; ObjectID = "9ZQ-4a-adq"; */
+"9ZQ-4a-adq.normalTitle" = "Iniciar";
+
+/* Class = "UIButton"; normalTitle = "Close"; ObjectID = "IFo-UZ-bKJ"; */
+"IFo-UZ-bKJ.normalTitle" = "Cerrar";
+
+/* Class = "UILabel"; text = "Select a sound for notifications"; ObjectID = "Kzq-QR-GeQ"; */
+"Kzq-QR-GeQ.text" = "Sonido para las notificaciones";
+
+/* Class = "UITextView"; text = "Notifications  the application sends you the alerts through a system service called \"Notifications\". If you do not enable the permission for the application to send you notifications, you will not be able to use it."; ObjectID = "M5l-7n-sRR"; */
+"M5l-7n-sRR.text" = "Notificaciones  La aplicación te alerta a traves de las notificaciones del sistema. Si no habilitas el permido para notificaciones la aplicación no puede alertarte y por lo tanto funcionar normalmente.";
+
+/* Class = "UILabel"; text = "Moving restarts countdown"; ObjectID = "M6P-ta-iaa"; */
+"M6P-ta-iaa.text" = "Reiniciar la cuenta atras al moverte";
+
+/* Class = "UILabel"; text = "Move detected, restarting countdown"; ObjectID = "OZx-Iu-bIE"; */
+"OZx-Iu-bIE.text" = "Movimiento detectado, reiniciando";
+
+/* Class = "UIButton"; normalTitle = "Change iOS Settings"; ObjectID = "QjY-st-m9J"; */
+"QjY-st-m9J.normalTitle" = "Cambiar ajustes";
+
+/* Class = "UILabel"; text = "Nothing Scheduled"; ObjectID = "RXD-f0-ppz"; */
+"RXD-f0-ppz.text" = "Sin programación";
+
+/* Class = "UITextView"; text = "Restrict to current location  To detect important location changes this application needs the \"Always\" permission. We do not track your position continuously and you will not notice changes in battery life since it is the system itself that notifies the application when this occurs.   The application does not save or transmit any information about locations or any other parameter."; ObjectID = "UQe-a8-KAr"; */
+"UQe-a8-KAr.text" = "Desactivar al cambiar de ubicación  Para detectar un cambio de ubicación significativo (Por ejemplo al abandonar la oficina) esta aplicación necesita el permiso de \"Siempre\" en localización. La Aplicación no rastrea tu ubicación continuamente y no notaras cambios significativos en el rendimiento de la bateria empleando esta función ya que es el propio sistema el que se encarga de notificarlo a la aplicación.   La aplicación no almacena ni transmite ubicaciones ni ningún otro parametro.";
+
+/* Class = "UIButton"; normalTitle = "Close"; ObjectID = "YqB-ih-Xym"; */
+"YqB-ih-Xym.normalTitle" = "Cerrar";
+
+/* Class = "UIButton"; normalTitle = "Change Settings"; ObjectID = "bmI-nv-1El"; */
+"bmI-nv-1El.normalTitle" = "Cambiar Ajustes";
+
+/* Class = "UIButton"; normalTitle = "Close"; ObjectID = "e35-CI-wTV"; */
+"e35-CI-wTV.normalTitle" = "Cerrar";
+
+/* Class = "UILabel"; text = "Preview Sound"; ObjectID = "jbI-pV-FFD"; */
+"jbI-pV-FFD.text" = "Previsualiar el sonido";
+
+/* Class = "UITextView"; text = "Restart Countdown when moving \nTo restart the countdown when you move with the device, permission \"When using the application\" is required, however, even the location is performed in an inaccurate manner, you may notice that the battery consumption increases slightly.  The application does not save or transmit any information about locations or any other parameter."; ObjectID = "m5j-7t-TcR"; */
+"m5j-7t-TcR.text" = "Reiniciar la cuenta atras al moverte \nPara reiniciar la cuenta atras cuendo caminas o te mueves con el dispositivo la aplicación necesita el permiso \"Cuando use la app\" en localización, en cualquier caso, como la localización es requerida con muy poca precisión para esta función no debería tener impacto en la batería.  La aplicación no almacena ni transmite ubicaciones ni ningún otro parametro.";

@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Time To
+
+  Created by Antonio Carranza on 4/12/17.
+  Copyright © 2017 Antonio Carranza. All rights reserved.
+*/
+"CFBundleDisplayName" = "Time To";
+"NSHumanReadableCopyright" = "2017 365d. Todos los derechos reservados.";

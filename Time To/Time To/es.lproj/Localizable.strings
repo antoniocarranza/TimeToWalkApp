@@ -1,0 +1,35 @@
+/* 
+  Localizable.strings
+  Time To
+
+  Created by Antonio Carranza on 4/12/17.
+  Copyright © 2017 Antonio Carranza. All rights reserved.
+*/
+
+"15 minutes" = "15 minutos";
+"30 minutes" = "30 minutos";
+"45 minutes" = "45 minutos";
+"1 hour" = "1 hora. Buena elección";
+"1 hour and 15 minutes" = "1 hora y 15 minutos";
+"1 hour and 30 minutes" = "1 hora y 30 minutos";
+"1 hour and 45 minutes" = "1 hora y 45 minutos";
+"2 hours, too late! 😡" = "2 horas, muy tarde! 😡";
+"Countdown started" = "Cuenta atras iniciada";
+"Countdown stopped" = "Cuenta atras detenida";
+"Stop" = "Detener";
+"Start" = "Iniciar";
+"Move detected, restarting countdown" = "Movimiento detectado, reiniciando la cuenta atras";
+"Location changed at %@" = "Cambió de ubicación a las %@";
+"Time To Notifications" = "Tiempo De";
+"Something went wrong and notification could not be created, sorry." = "Algo ha fallado y no hemos podido crear la notificación.";
+
+"Time To Do" = "Tiempo De Moverse";
+"A little walk through the office" = "Caminar un poco por la oficina";
+
+"NotificationsHelp" = "Notificaciones.\n\nLa aplicación te alerta a traves de las notificaciones del sistema. Si no habilitas el permido para notificaciones la aplicación no puede alertarte y por lo tanto funcionar normalmente.";
+
+"RestrictLocationHelp" = "Desactivar al cambiar de ubicación.\n\nSi activas esta caracteristica la cuentra atras se detendra si cambias de ubicación significativamente. Para detectar un cambio de ubicación significativo (Por ejemplo al abandonar la oficina) esta aplicación necesita el permiso de \"Siempre\" en localización. La Aplicación no rastrea tu ubicación continuamente y no notaras cambios significativos en el rendimiento de la bateria empleando esta función ya que es el propio sistema el que se encarga de notificarlo a la aplicación.\n\nLa aplicación no almacena ni transmite ubicaciones ni ningún otro parametro.";
+
+"RestartCountdownHelp" = "Reiniciar la cuenta atras al moverte.\nSi activas esta opción cada vez que te muevas con el dispositivo se reestablecerá la cuenta atras. Para reiniciar la cuenta atras cuendo caminas o te mueves con el dispositivo la aplicación necesita el permiso \"Cuando use la app\" en localización, en cualquier caso, como la localización es requerida con muy poca precisión para esta función no debería tener impacto en la batería.\n\nLa aplicación no almacena ni transmite ubicaciones ni ningún otro parametro.";
+
+"LocalizationHelp" = "Reiniciar la cuenta atras al moverte.\nSi activas esta opción cada vez que te muevas con el dispositivo se reestablecerá la cuenta atras. Para reiniciar la cuenta atras cuendo caminas o te mueves con el dispositivo la aplicación necesita el permiso \"Cuando use la app\" en localización, en cualquier caso, como la localización es requerida con muy poca precisión para esta función no debería tener impacto en la batería.\n\nReiniciar la cuenta atras al moverte.\nSi activas esta opción cada vez que te muevas con el dispositivo se reestablecerá la cuenta atras. Para reiniciar la cuenta atras cuendo caminas o te mueves con el dispositivo la aplicación necesita el permiso \"Cuando use la app\" en localización, en cualquier caso, como la localización es requerida con muy poca precisión para esta función no debería tener impacto en la batería.\n\nLa aplicación no almacena ni transmite ubicaciones ni ningún otro parametro.";
