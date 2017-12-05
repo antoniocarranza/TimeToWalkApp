@@ -1,0 +1,35 @@
+/* 
+  Localizable.strings
+  Time To
+
+  Created by Antonio Carranza on 4/12/17.
+  Copyright © 2017 Antonio Carranza. All rights reserved.
+*/
+
+"15 minutes" = "15 minutes";
+"30 minutes" = "30 minutes";
+"45 minutes" = "45 minutes";
+"1 hour" = "1 hour. Good Choice";
+"1 hour and 15 minutes" = "1 hour and 15 minutes";
+"1 hour and 30 minutes" = "1 hour and 30 minutes";
+"1 hour and 45 minutes" = "1 hour and 45 minutes";
+"2 hours, too late! 😡" = "2 hours, too late! 😡";
+"Countdown started" = "Countdown started";
+"Countdown stopped" = "Countdown stopped";
+"Stop" = "Stop";
+"Start" = "Start";
+"Move detected, restarting countdown" = "Move detected, restarting countdown";
+"Location changed at %@" = "Location changed at %@";
+"Time To Notifications" = "Time To Notifications";
+"Something went wrong and notification could not be created, sorry." = "Something went wrong and notification could not be created, sorry.";
+
+"Time To Do" = "Time To Move";
+"A little walk through the office" = "A little walk through the office";
+
+"NotificationsHelp" = "Notifications.\n\nthe application sends you the alerts through a system service called \"Notifications\". If you don't enable this permission for the application, you will not be able to use it.";
+
+"RestrictLocationHelp" = "Restrict to current location.\n\nIf you set to On the countdown will be stopped if system detects that your location has changed significantly. To detect important location changes (like moving away office) this application needs the \"Always\" permission. We do not track your position continuously and you will not notice changes in battery life since it is the system itself that notifies the application when this occurs.\n\nThe application does not save or transmit any information about locations or any other parameter.";
+
+"RestartCountdownHelp" = "Restart Countdown when moving.\n\nIf you set this to On countdown will be restarted any time that you move at least 10 meters with your device. To restart the countdown when you move with the device, permission \"When using the application\" is required, however, even the location is performed in an inaccurate manner, you may notice that the battery consumption increases slightly.\n\nThe application does not save or transmit any information about locations or any other parameter.";
+
+"LocalizationHelp" = "Restart Countdown when moving.\n\nIf you set this to On countdown will be restarted any time that you move at least 10 meters with your device. To restart the countdown when you move with the device, permission \"When using the application\" is required, however, even the location is performed in an inaccurate manner, you may notice that the battery consumption increases slightly.\n\nRestrict to current location.\n\nIf you set to On the countdown will be stopped if system detects that your location has changed significantly. To detect important location changes (like moving away office) this application needs the \"Always\" permission. We do not track your position continuously and you will not notice changes in battery life since it is the system itself that notifies the application when this occurs.\n\nThe application does not save or transmit any information about locations or any other parameter.";
